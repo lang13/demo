@@ -1,6 +1,7 @@
 package com.eem.demo.entity;
 
 import javax.persistence.*;
+import java.util.List;
 
 /**
  * 这是一个数据库表的类
@@ -24,6 +25,20 @@ public class User {
 
     @Column
     private String photo;
+
+    /**
+     * 不在数据库中创建这个列
+     */
+    @Transient
+    private List<User> friends;
+
+    public List<User> getFriends() {
+        return friends;
+    }
+
+    public void setFriends(List<User> friends) {
+        this.friends = friends;
+    }
 
     public Integer getId() {
         return id;
