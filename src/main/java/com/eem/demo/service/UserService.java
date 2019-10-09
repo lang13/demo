@@ -36,4 +36,12 @@ public interface UserService {
      * @return
      */
     int updatePhoto(String filePath, String username);
+
+    /**
+     * 根据用户id修改昵称
+     * @param nickname
+     * @param userId
+     * @return
+     */
+    int updateNickname(String nickname, String userId);
 }

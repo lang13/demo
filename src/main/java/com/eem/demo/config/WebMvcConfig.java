@@ -29,7 +29,7 @@ public class WebMvcConfig extends WebMvcConfigurationSupport {
                 //拦截全部
                 .addPathPatterns("/**")
                 //放行的请求
-                .excludePathPatterns("/login","/register","/photo/downloadPhoto","test");
+                .excludePathPatterns("/login","/register","test");
     }
 
     @Bean

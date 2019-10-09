@@ -5,6 +5,7 @@ import com.eem.demo.repository.UserRepository;
 import com.eem.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @author Administrator
@@ -31,7 +32,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public int updatePhoto(String filePath, String username) {
         return userRepository.updatePhoto(filePath, username);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public int updateNickname(String nickname, String userId) {
+        return userRepository.updateNickname(nickname,userId);
     }
 }

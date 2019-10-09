@@ -21,6 +21,9 @@ public class User {
     private String username;
 
     @Column
+    private String nickname;
+
+    @Column
     private String password;
 
     @Column
@@ -31,6 +34,14 @@ public class User {
      */
     @Transient
     private List<User> friends;
+
+    public String getNickname() {
+        return nickname;
+    }
+
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
+    }
 
     public List<User> getFriends() {
         return friends;

@@ -32,9 +32,17 @@ public interface UserRepository extends JpaRepository<User,Integer> {
      * @param username
      * @return
      */
-
-    @Transactional
     @Modifying
     @Query(value = "update user set photo = ?1 where username = ?2", nativeQuery = true)
     public int updatePhoto(String filePath, String username);
+
+    /**
+     * 根据用户id修改昵称
+     * @param nickname
+     * @param userId
+     * @return
+     */
+    @Modifying
+    @Query(value = "update user set nickname = ?1 where id = ?2", nativeQuery = true)
+    public int updateNickname(String nickname, String userId);
 }

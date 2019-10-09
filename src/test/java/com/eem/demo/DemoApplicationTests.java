@@ -15,14 +15,24 @@ public class DemoApplicationTests {
     @Autowired
     UserRepository userRepository;
 
-    @Test
-    public void contextLoads() {
-        int i = userRepository.updatePhoto("C:/emm/1875b54c-252f-431f-936a-3156f611e143.jpg", "张三");
-    }
+//    @Test
+//    public void contextLoads() {
+//        int i = userRepository.updatePhoto("C:/emm/1875b54c-252f-431f-936a-3156f611e143.jpg", "张三");
+//    }
 
     @Test
     public void test_01(){
         String username = JwtUtil.getUsername("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dpbk5hbWUiOiLlvKDkuIkiLCJleHAiOjE1NzA1MzMyNTUsInVzZXJJZCI6IjEifQ.B-TQ5sFMZ7ge4e7n8dzrG3t5wu_m-Da0RemQU_kR_M8");
         System.out.println(username);
+    }
+
+    @Test
+    public void test_02(){
+        for(int i = 0; i < 9; i++){
+            for(int y = 0; y <= i; y++){
+                System.out.printf("* \t");//打印 * 和空格
+            }
+            System.out.println();//换行
+        }
     }
 }

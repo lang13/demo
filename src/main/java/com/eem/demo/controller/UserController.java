@@ -159,6 +159,30 @@ public class UserController {
             ReturnObj obj = ReturnObj.fail();
             return obj;
         }
+    }
 
+    /**
+     * 修改用户昵称
+     * @param nickname
+     * @param request
+     * @return
+     */
+    @RequestMapping("/updateNickname")
+    public ReturnObj updateNickname(String nickname, HttpServletRequest request){
+        //获取用户token
+        String token = request.getHeader("token");
+        //获取token中的用户id
+        String userId = JwtUtil.getUserId(token);
+        //修改nickname
+        int i = userServiceImpl.updateNickname(nickname, userId);
+        if (i > 0){
+            ReturnObj obj = ReturnObj.success();
+            obj.setMsg("用户昵称修改成功!!!");
+            return obj;
+        }else{
+            ReturnObj obj = ReturnObj.fail();
+            obj.setMsg("用户昵称修改失败!!!");
+            return obj;
+        }
     }
 }
