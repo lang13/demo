@@ -69,7 +69,7 @@ public class JwtUtil {
             //利用解密器对token进行验证,如果没有异常,说明验证成功
             DecodedJWT jwt = verifier.verify(token);
             return true;
-        } catch (UnsupportedEncodingException e) {
+        } catch (Exception e) {
             return false;
         }
     }

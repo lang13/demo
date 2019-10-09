@@ -3,13 +3,25 @@
 <head>
     <meta charset="UTF-8"></meta>
     <title>Title</title>
+    <script>
+        $.ajax({
+            url: "localhost:9090/photo/downloadPhoto",
+            dataType: 'json',
+            type: 'GET',
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("token", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsb2dpbk5hbWUiOiLlvKDkuIkiLCJleHAiOjE1NzA2MjA4NDQsInVzZXJJZCI6IjEifQ.iyKNgloRfuWmlCmT9olFT9IoUDPVG5M5MWkjactAMd0");
+            },
+            async: false,
+            cache: false,
+            //contentType: 'application/x-www-form-urlencoded',
+            success: function (sResponse) {
+                alert(sResponse)
+            }
+        })
+    </script>
 </head>
 <body>
 
-    <form method="post" action="/uploadPhoto" enctype="multipart/form-data">
-        <input type="file" name="file"></input><br></br>
-        <input type="submit" name="提交"></input>
-    </form>
 
 </body>
 </html>

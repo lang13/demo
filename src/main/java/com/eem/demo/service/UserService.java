@@ -44,4 +44,11 @@ public interface UserService {
      * @return
      */
     int updateNickname(String nickname, String userId);
+
+    /**
+     * 根据用户名查找用户信息
+     * @param username
+     * @return
+     */
+    User findByUsername(String username);
 }

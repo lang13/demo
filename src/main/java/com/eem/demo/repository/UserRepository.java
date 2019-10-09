@@ -45,4 +45,12 @@ public interface UserRepository extends JpaRepository<User,Integer> {
     @Modifying
     @Query(value = "update user set nickname = ?1 where id = ?2", nativeQuery = true)
     public int updateNickname(String nickname, String userId);
+
+
+    /**
+     * 根据用户名查找用户信息
+     * @param username
+     * @return
+     */
+    public User findByUsername(String username);
 }

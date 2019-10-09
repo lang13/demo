@@ -185,4 +185,22 @@ public class UserController {
             return obj;
         }
     }
+
+    @RequestMapping("/findUser")
+    public ReturnObj findUser(String username){
+        ReturnObj obj = null;
+
+        User user = userServiceImpl.findByUsername(username);
+        //判空
+        if (user == null){
+            obj = ReturnObj.fail();
+            obj.setMsg("用户不存在");
+        }else{
+            obj = ReturnObj.success();
+            obj.add("user",user);
+        }
+        return obj;
+    }
+
+
 }

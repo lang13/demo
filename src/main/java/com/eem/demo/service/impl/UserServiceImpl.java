@@ -42,4 +42,9 @@ public class UserServiceImpl implements UserService {
     public int updateNickname(String nickname, String userId) {
         return userRepository.updateNickname(nickname,userId);
     }
+
+    @Override
+    public User findByUsername(String username) {
+        return userRepository.findByUsername(username);
+    }
 }

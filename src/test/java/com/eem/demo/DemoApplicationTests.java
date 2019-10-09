@@ -15,10 +15,11 @@ public class DemoApplicationTests {
     @Autowired
     UserRepository userRepository;
 
-//    @Test
-//    public void contextLoads() {
-//        int i = userRepository.updatePhoto("C:/emm/1875b54c-252f-431f-936a-3156f611e143.jpg", "张三");
-//    }
+    @Test
+    public void contextLoads() {
+        User user = userRepository.findByUsername("王五");
+        System.out.println(user);
+    }
 
     @Test
     public void test_01(){
