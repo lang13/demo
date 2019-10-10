@@ -20,6 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -244,5 +245,25 @@ public class UserController {
                 return obj;
             }
         }
+    }
+
+    @RequestMapping("/findFriends")
+    public ReturnObj findFriends(HttpServletRequest request){
+        String token = request.getHeader("token");
+        //获取用户id
+        String userId = JwtUtil.getUserId(token);
+        ReturnObj obj;
+        //查找好友集
+        List<User> friends = userServiceImpl.findFriend(userId);
+        if(friends != null){
+            obj = ReturnObj.success();
+            obj.setMsg("查找好友成功!!!");
+            obj.add("friends", friends);
+        }else{
+            obj = ReturnObj.fail();
+            obj.setMsg("查找好友失败!!!");
+            obj.add("friends", null);
+        }
+        return obj;
     }
 }

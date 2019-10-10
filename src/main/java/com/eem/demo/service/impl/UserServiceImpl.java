@@ -1,6 +1,5 @@
 package com.eem.demo.service.impl;
 
-import com.eem.demo.entity.Friend;
 import com.eem.demo.entity.User;
 import com.eem.demo.repository.FriendRepository;
 import com.eem.demo.repository.UserRepository;
@@ -10,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
+import java.util.List;
 
 /**
  * @author Administrator
@@ -18,6 +18,9 @@ import java.io.File;
 public class UserServiceImpl implements UserService {
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    FriendRepository friendRepository;
 
     @Override
     public boolean exists(String username) {
@@ -57,5 +60,12 @@ public class UserServiceImpl implements UserService {
         if (file.exists()){
             file.delete();
         }
+    }
+
+    @Override
+    public List<User> findFriend(String userId) {
+        List<Integer> fiendId = friendRepository.findFriendIdByUserId(userId);
+
+        return userRepository.findAll(fiendId);
     }
 }

@@ -6,6 +6,8 @@ import com.eem.demo.service.FriendService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * @author Administrator
  */
@@ -29,11 +31,22 @@ public class FriendServiceImpl implements FriendService {
             friend1.setUserId(user);
         }
         //插入数据
-        Friend friend = friendRepository.save(friend1);
-        if (friend != null){
-            return 1;
+        //插入数据前先判断是否已经有数据
+        Friend isFriend = friendRepository.isFriend(userId, friendId);
+        if(isFriend == null){
+            Friend friend = friendRepository.save(friend1);
+            if (friend != null){
+                return 1;
+            }else{
+                return 0;
+            }
         }else{
-            return 0;
+            return 1;
         }
+    }
+
+    @Override
+    public List<Integer> findFriendId(String userId) {
+        return friendRepository.findFriendIdByUserId(userId);
     }
 }

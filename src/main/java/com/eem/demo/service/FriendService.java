@@ -1,5 +1,7 @@
 package com.eem.demo.service;
 
+import java.util.List;
+
 /**
  * @author Administrator
  */
@@ -11,4 +13,11 @@ public interface FriendService {
      * @return
      */
     int addFriend(String userId, String friendId);
+
+    /**
+     * 根据用户id查询好友id集合
+     * @param userId
+     * @return
+     */
+    List<Integer> findFriendId(String userId);
 }

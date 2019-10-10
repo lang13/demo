@@ -4,13 +4,17 @@ import com.eem.demo.entity.Friend;
 import com.eem.demo.entity.User;
 import com.eem.demo.repository.FriendRepository;
 import com.eem.demo.repository.UserRepository;
+import com.eem.demo.service.UserService;
 import com.eem.demo.util.JwtUtil;
+import com.eem.demo.util.Md5Util;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -20,6 +24,9 @@ public class DemoApplicationTests {
 
     @Autowired
     FriendRepository friendRepository;
+
+    @Autowired
+    UserService userServiceImpl;
 
     @Test
     public void contextLoads() {
@@ -44,10 +51,22 @@ public class DemoApplicationTests {
     }
 
     @Test
-    @Transactional(rollbackFor = Exception.class)
     public void test_03(){
 //        System.out.println("fuck");
-        Friend friend = friendRepository.isFriend("2", "1");
+        List<Integer> friendId = friendRepository.findFriendIdByUserId("3");
+        System.out.println(friendId);
+    }
+
+    @Test
+    public void test_04(){
+        List<User> friend = userServiceImpl.findFriend("3");
         System.out.println(friend);
+    }
+
+    @Test
+    public void test_05(){
+        String msg = "123";
+        String md5 = Md5Util.getMd5(msg);
+        System.out.println(md5);
     }
 }

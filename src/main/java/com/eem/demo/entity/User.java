@@ -1,5 +1,7 @@
 package com.eem.demo.entity;
 
+import com.eem.demo.util.Md5Util;
+
 import javax.persistence.*;
 import java.util.List;
 
@@ -72,7 +74,7 @@ public class User {
     }
 
     public void setPassword(String password) {
-        this.password = password;
+        this.password = Md5Util.getMd5(password);
     }
 
     public String getPhoto() {

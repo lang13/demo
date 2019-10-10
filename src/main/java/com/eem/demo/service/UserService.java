@@ -2,6 +2,8 @@ package com.eem.demo.service;
 
 import com.eem.demo.entity.User;
 
+import java.util.List;
+
 /**
  * @author Administrator
  */
@@ -58,4 +60,10 @@ public interface UserService {
      */
     void deleteFile(String filePath);
 
+    /**
+     * 根据用户id查找用户的好友集
+     * @param userId
+     * @return
+     */
+    List<User> findFriend(String userId);
 }
