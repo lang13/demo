@@ -1,6 +1,8 @@
 package com.eem.demo;
 
+import com.eem.demo.entity.Friend;
 import com.eem.demo.entity.User;
+import com.eem.demo.repository.FriendRepository;
 import com.eem.demo.repository.UserRepository;
 import com.eem.demo.util.JwtUtil;
 import org.junit.Test;
@@ -8,12 +10,16 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class DemoApplicationTests {
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    FriendRepository friendRepository;
 
     @Test
     public void contextLoads() {
@@ -35,5 +41,13 @@ public class DemoApplicationTests {
             }
             System.out.println();//换行
         }
+    }
+
+    @Test
+    @Transactional(rollbackFor = Exception.class)
+    public void test_03(){
+//        System.out.println("fuck");
+        Friend friend = friendRepository.isFriend("2", "1");
+        System.out.println(friend);
     }
 }

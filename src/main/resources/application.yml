@@ -19,5 +19,5 @@ spring:
       ddl-auto: update
 
 #修改端口号
-server:
-  port: 9090
+#server:
+#  port: 9090

@@ -10,7 +10,9 @@ import javax.persistence.*;
 @Table
 public class Friend {
     @Id
+    /** 这是一个主键*/
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    /**设置为自增*/
     private Integer id;
 
     @Column
@@ -55,5 +57,15 @@ public class Friend {
 
     public void setFriendId(Integer friendId) {
         this.friendId = friendId;
+    }
+
+    @Override
+    public String toString() {
+        return "Friend{" +
+                "id=" + id +
+                ", userId=" + userId +
+                ", friendId=" + friendId +
+                ", myFriend=" + myFriend +
+                '}';
     }
 }

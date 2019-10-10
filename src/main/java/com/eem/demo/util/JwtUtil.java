@@ -17,9 +17,9 @@ import java.util.Map;
  */
 public class JwtUtil {
     /**
-     * 定义过期时间 15分钟
+     * 定义过期时间 150分钟
      */
-    private static final long EXPIRE_TIME = 15 * 60 * 1000;
+    private static final long EXPIRE_TIME = 150 * 60 * 1000;
 
     /**
      * token的私钥
@@ -50,7 +50,6 @@ public class JwtUtil {
                     .withClaim("userId", userId)
                     .withExpiresAt(date)
                     .sign(algorithm);
-
         } catch (UnsupportedEncodingException e) {
             return null;
         }

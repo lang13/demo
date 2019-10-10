@@ -11,7 +11,7 @@ public interface UserService {
      * @param username
      * @return
      */
-    boolean isRegister(String username);
+    boolean exists(String username);
 
     /**
      * 根据用户名和密码新建用户
@@ -51,4 +51,11 @@ public interface UserService {
      * @return
      */
     User findByUsername(String username);
+
+    /**
+     * 根据文件路径删除硬盘里的文件
+     * @param filePath
+     */
+    void deleteFile(String filePath);
+
 }

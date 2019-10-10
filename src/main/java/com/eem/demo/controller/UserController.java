@@ -3,7 +3,9 @@ package com.eem.demo.controller;
 import com.eem.demo.entity.User;
 import com.eem.demo.pojo.ReturnObj;
 import com.eem.demo.repository.UserRepository;
+import com.eem.demo.service.FriendService;
 import com.eem.demo.service.UserService;
+import com.eem.demo.service.impl.FriendServiceImpl;
 import com.eem.demo.util.JwtUtil;
 import org.apache.log4j.Logger;
 import org.aspectj.util.FileUtil;
@@ -37,6 +39,8 @@ public class UserController {
     @Autowired
     UserService userServiceImpl;
 
+    @Autowired
+    FriendService friendServiceImpl;
     /**
      * 用户登陆
      * @param user
@@ -45,19 +49,18 @@ public class UserController {
     @RequestMapping("/login")
     public ReturnObj login(User user){
         ReturnObj obj = ReturnObj.fail();
-        User login;
-        if (userServiceImpl.isRegister(user.getUsername())){
+        User login = userServiceImpl.login(user.getUsername(), user.getPassword());
+        if (login != null){
             //将代码设为成功
             obj.setCode(100);
             obj.setMsg("登陆成功!!!");
 
-            login = userServiceImpl.login(user.getUsername(), user.getPassword());
             obj.add("user",login);
             //token签名
             String token = JwtUtil.sign(login.getUsername(), String.valueOf(login.getId()));
             obj.add("token",token);
         }else{
-            obj.setMsg("用户不存在!!!");
+            obj.setMsg("账号密码错误!!!");
         }
         return obj;
     }
@@ -65,7 +68,7 @@ public class UserController {
     @RequestMapping("/register")
     public ReturnObj register(User user){
         ReturnObj obj = ReturnObj.success();
-        if (userServiceImpl.isRegister(user.getUsername())){
+        if (userServiceImpl.exists(user.getUsername())){
             //用户已存在,设置状态码和错误信息
             obj.setCode(200);
             obj.setMsg("用户已存在!!!");
@@ -79,7 +82,7 @@ public class UserController {
     }
 
     /**
-     * 上传用户头像文件
+     * 客户端上传用户头像文件到服务器
      * @param file
      * @param request
      * @return
@@ -112,9 +115,13 @@ public class UserController {
             file.transferTo(dest);
             ReturnObj obj = ReturnObj.success();
             obj.setMsg("文件上传成功!!!");
-            //数据库保存photo路径
+            //获取用户名
             String username = JwtUtil.getUsername(request.getHeader("token"));
-            userServiceImpl.updatePhoto(filePath,username);
+            //上传数据时,先将原文件删除
+            String oldFile = userServiceImpl.findByUsername(username).getPhoto();
+            userServiceImpl.deleteFile(oldFile);
+
+            userServiceImpl.updatePhoto(filename,username);
             //返回上传的文件类
             obj.add("photo",dest);
             return obj;
@@ -128,7 +135,7 @@ public class UserController {
     }
 
     /**
-     * 下载用户头像
+     * 客户端下载用户头像
      * @param request
      * @param response
      * @return
@@ -174,6 +181,7 @@ public class UserController {
         //获取token中的用户id
         String userId = JwtUtil.getUserId(token);
         //修改nickname
+        logger.info("用户传过来的昵称: " + nickname);
         int i = userServiceImpl.updateNickname(nickname, userId);
         if (i > 0){
             ReturnObj obj = ReturnObj.success();
@@ -190,6 +198,7 @@ public class UserController {
     public ReturnObj findUser(String username){
         ReturnObj obj = null;
 
+        logger.info("用户传过来的需要查询的朋友名: " + username);
         User user = userServiceImpl.findByUsername(username);
         //判空
         if (user == null){
@@ -202,5 +211,38 @@ public class UserController {
         return obj;
     }
 
+    @RequestMapping("/addFriend")
+    public ReturnObj addFriend(String fiendName, HttpServletRequest request){
+        ReturnObj obj = null;
+        logger.info("朋友姓名: " + fiendName);
+        //判断用户是否存在
+        if(!userServiceImpl.exists(fiendName)){
+            obj = ReturnObj.fail();
+            obj.setMsg("用户不存在!!!");
+            return obj;
+        }else{
+            //获取token以及用户id
+            String token = request.getHeader("token");
+            String userId = JwtUtil.getUserId(token);
+            //获取好友id
+            User friend = userServiceImpl.findByUsername(fiendName);
+            //查询到的用户id
+            logger.info("查询到的用户id: " + friend.getId());
+            Integer friendId = friend.getId();
+            //插入数据
+            int i = friendServiceImpl.addFriend(userId, String.valueOf(friendId));
+            //判断是否成功
+            if (i <= 0){
+                obj = ReturnObj.fail();
+                obj.setMsg("新增好友失败!!!");
 
+                return obj;
+            }else{
+                obj = ReturnObj.success();
+                obj.setMsg("新增好友成功!!!");
+
+                return obj;
+            }
+        }
+    }
 }
