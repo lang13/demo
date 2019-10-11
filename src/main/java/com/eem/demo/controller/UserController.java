@@ -5,7 +5,6 @@ import com.eem.demo.pojo.ReturnObj;
 import com.eem.demo.repository.UserRepository;
 import com.eem.demo.service.FriendService;
 import com.eem.demo.service.UserService;
-import com.eem.demo.service.impl.FriendServiceImpl;
 import com.eem.demo.util.JwtUtil;
 import org.apache.log4j.Logger;
 import org.aspectj.util.FileUtil;
@@ -42,6 +41,9 @@ public class UserController {
 
     @Autowired
     FriendService friendServiceImpl;
+
+    @Autowired
+    UserService getUserServiceImpl;
     /**
      * 用户登陆
      * @param user
@@ -195,6 +197,11 @@ public class UserController {
         }
     }
 
+    /**
+     * 根据用户名查询用户信息
+     * @param username
+     * @return
+     */
     @RequestMapping("/findUser")
     public ReturnObj findUser(String username){
         ReturnObj obj = null;
@@ -212,6 +219,12 @@ public class UserController {
         return obj;
     }
 
+    /**
+     * 根据用户名添加好友
+     * @param fiendName
+     * @param request
+     * @return
+     */
     @RequestMapping("/addFriend")
     public ReturnObj addFriend(String fiendName, HttpServletRequest request){
         ReturnObj obj = null;
@@ -241,12 +254,19 @@ public class UserController {
             }else{
                 obj = ReturnObj.success();
                 obj.setMsg("新增好友成功!!!");
+                List<User> users = userServiceImpl.findFriend(userId);
+                obj.add("friends",users);
 
                 return obj;
             }
         }
     }
 
+    /**
+     * 查询用户好友
+     * @param request
+     * @return
+     */
     @RequestMapping("/findFriends")
     public ReturnObj findFriends(HttpServletRequest request){
         String token = request.getHeader("token");
@@ -266,4 +286,34 @@ public class UserController {
         }
         return obj;
     }
+
+    /**
+     * 根据好友名删除好友
+     * @param request
+     * @param friendName
+     * @return
+     */
+    @RequestMapping("/deleteFriend")
+    public  ReturnObj deleteFriend(HttpServletRequest request, String friendName){
+        ReturnObj obj;
+        //获取用户id
+        String token = request.getHeader("token");
+        String userId = JwtUtil.getUserId(token);
+
+        //删除好友
+        int i = friendServiceImpl.deleteFriend(userId, friendName);
+        if (i > 0){
+            obj = ReturnObj.success();
+            obj.setMsg("成功删除好友!!!");
+            List<User> users = userServiceImpl.findFriend(userId);
+            obj.add("friends",users);
+
+            return obj;
+        }else{
+            obj = ReturnObj.fail();
+            obj.setMsg("删除好友失败!!!");
+            return obj;
+        }
+    }
 }
+

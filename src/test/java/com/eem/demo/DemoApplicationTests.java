@@ -4,7 +4,9 @@ import com.eem.demo.entity.Friend;
 import com.eem.demo.entity.User;
 import com.eem.demo.repository.FriendRepository;
 import com.eem.demo.repository.UserRepository;
+import com.eem.demo.service.FriendService;
 import com.eem.demo.service.UserService;
+import com.eem.demo.service.impl.FriendServiceImpl;
 import com.eem.demo.util.JwtUtil;
 import com.eem.demo.util.Md5Util;
 import org.junit.Test;
@@ -27,6 +29,9 @@ public class DemoApplicationTests {
 
     @Autowired
     UserService userServiceImpl;
+
+    @Autowired
+    FriendService friendServiceImpl;
 
     @Test
     public void contextLoads() {
@@ -68,5 +73,10 @@ public class DemoApplicationTests {
         String msg = "123";
         String md5 = Md5Util.getMd5(msg);
         System.out.println(md5);
+    }
+
+    @Test
+    public void test_06(){
+        friendServiceImpl.deleteFriend("3","李四");
     }
 }

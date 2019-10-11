@@ -20,4 +20,12 @@ public interface FriendService {
      * @return
      */
     List<Integer> findFriendId(String userId);
+
+    /**
+     * 删除好友关系,需要用户id和好友姓名
+     * @param userId
+     * @param friendName
+     * @return
+     */
+    int deleteFriend(String userId, String friendName);
 }
