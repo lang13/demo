@@ -36,14 +36,14 @@ public interface UserRepository extends JpaRepository<User,Integer> {
     public int updatePhoto(String filePath, String username);
 
     /**
-     * 根据用户id修改昵称
-     * @param nickname
+     * 根据用户id修改用户名
+     * @param username
      * @param userId
      * @return
      */
     @Modifying
-    @Query(value = "update user set nickname = ?1 where id = ?2", nativeQuery = true)
-    public int updateNickname(String nickname, String userId);
+    @Query(value = "update user set username = ?1 where id = ?2", nativeQuery = true)
+    public int updateUsername(String username, String userId);
 
 
     /**

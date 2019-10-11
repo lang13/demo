@@ -45,8 +45,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public int updateNickname(String nickname, String userId) {
-        return userRepository.updateNickname(nickname,userId);
+    public int updateUsername(String nickname, String userId) {
+        return userRepository.updateUsername(nickname,userId);
     }
 
     @Override

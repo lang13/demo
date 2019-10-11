@@ -172,28 +172,36 @@ public class UserController {
     }
 
     /**
-     * 修改用户昵称
-     * @param nickname
+     * 修改用户名
+     * @param username
      * @param request
      * @return
      */
-    @RequestMapping("/updateNickname")
-    public ReturnObj updateNickname(String nickname, HttpServletRequest request){
+    @RequestMapping("/updateUsername")
+    public ReturnObj updateNickname(String username, HttpServletRequest request){
         //获取用户token
         String token = request.getHeader("token");
         //获取token中的用户id
         String userId = JwtUtil.getUserId(token);
         //修改nickname
-        logger.info("用户传过来的昵称: " + nickname);
-        int i = userServiceImpl.updateNickname(nickname, userId);
-        if (i > 0){
-            ReturnObj obj = ReturnObj.success();
-            obj.setMsg("用户昵称修改成功!!!");
+        logger.info("用户传过来的用户名: " + username);
+        if (userServiceImpl.exists(username)){
+            ReturnObj obj = ReturnObj.fail();
+            obj.setMsg("用户名已存在!!!");
             return obj;
         }else{
-            ReturnObj obj = ReturnObj.fail();
-            obj.setMsg("用户昵称修改失败!!!");
-            return obj;
+            int i = userServiceImpl.updateUsername(username, userId);
+            if (i > 0){
+                ReturnObj obj = ReturnObj.success();
+                obj.setMsg("用户名修改成功!!!");
+
+                obj.add("newName",username);
+                return obj;
+            }else{
+                ReturnObj obj = ReturnObj.fail();
+                obj.setMsg("用户名修改失败!!!");
+                return obj;
+            }
         }
     }
 

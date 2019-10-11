@@ -41,11 +41,11 @@ public interface UserService {
 
     /**
      * 根据用户id修改昵称
-     * @param nickname
+     * @param username
      * @param userId
      * @return
      */
-    int updateNickname(String nickname, String userId);
+    int updateUsername(String username, String userId);
 
     /**
      * 根据用户名查找用户信息
