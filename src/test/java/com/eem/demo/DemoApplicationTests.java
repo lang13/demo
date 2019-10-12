@@ -35,7 +35,7 @@ public class DemoApplicationTests {
 
     @Test
     public void contextLoads() {
-        User user = userRepository.findByUsername("王五");
+        User user = userRepository.findByUsername("张三");
         System.out.println(user);
     }
 

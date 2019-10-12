@@ -6,6 +6,7 @@ import com.eem.demo.repository.UserRepository;
 import com.eem.demo.service.FriendService;
 import com.eem.demo.service.UserService;
 import com.eem.demo.util.JwtUtil;
+import com.eem.demo.util.Md5Util;
 import org.apache.log4j.Logger;
 import org.aspectj.util.FileUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -203,6 +204,44 @@ public class UserController {
                 return obj;
             }
         }
+    }
+
+
+    /**
+     * 根据账户id修改账户密码
+     * 需要验证输入的密码是否正确
+     * @param oldPassword
+     * @param newPassword
+     * @param request
+     * @return
+     */
+    @RequestMapping("/updatePassword")
+    public ReturnObj updatePassword(String oldPassword, String newPassword, HttpServletRequest request){
+        ReturnObj obj = null;
+        //获取用户id
+        String token = request.getHeader("token");
+        String userId = JwtUtil.getUserId(token);
+        String username = JwtUtil.getUsername(token);
+
+        //验证oldPassword是否真确
+        User user = userServiceImpl.findByUsername(username);
+        logger.info("获取的oldPassword: " + oldPassword);
+        logger.info("获取的newPassword: " + newPassword);
+        oldPassword = Md5Util.getMd5(oldPassword);
+        if (user.getPassword().equals(oldPassword)){
+            int i = userServiceImpl.updatePassword(newPassword, userId);
+            if (i > 0){
+                obj = ReturnObj.success();
+                obj.setMsg("密码修改成功!!!");
+            }else{
+                obj = ReturnObj.fail();
+                obj.setMsg("密码修改失败!!!");
+            }
+        }else{
+            obj = ReturnObj.fail();
+            obj.setMsg("密码错误!!!");
+        }
+        return obj;
     }
 
     /**

@@ -66,4 +66,12 @@ public interface UserService {
      * @return
      */
     List<User> findFriend(String userId);
+
+    /**
+     * 根据账户id修改用户密码
+     * @param password
+     * @param userId
+     * @return
+     */
+    int updatePassword(String password, String userId);
 }

@@ -4,6 +4,7 @@ import com.eem.demo.entity.User;
 import com.eem.demo.repository.FriendRepository;
 import com.eem.demo.repository.UserRepository;
 import com.eem.demo.service.UserService;
+import com.eem.demo.util.Md5Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -67,5 +68,12 @@ public class UserServiceImpl implements UserService {
         List<Integer> fiendId = friendRepository.findFriendIdByUserId(userId);
 
         return userRepository.findAll(fiendId);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public int updatePassword(String password, String userId) {
+        password = Md5Util.getMd5(password);
+        return userRepository.updatePassword(password, userId);
     }
 }
