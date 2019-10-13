@@ -16,7 +16,7 @@ public class InterceptorConfig implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         //解决后台获取前端数据中文乱码问题
         response.setCharacterEncoding("utf-8");
-        //从请求头中会去token
+        //从请求头中拿取token
         //前端需要设置token的唯一标识
         String token = request.getHeader("token");
 
@@ -32,7 +32,7 @@ public class InterceptorConfig implements HandlerInterceptor {
         }
 
         System.out.println("方法被拦截...");
-        return false;
+        return false;        //测试,调为true
     }
 
     @Override

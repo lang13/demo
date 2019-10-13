@@ -65,4 +65,15 @@ public class Message {
     public void setMsg(String msg) {
         this.msg = msg;
     }
+
+    @Override
+    public String toString() {
+        return "Message{" +
+                "from='" + from + '\'' +
+                ", fromId='" + fromId + '\'' +
+                ", to='" + to + '\'' +
+                ", toId='" + toId + '\'' +
+                ", msg='" + msg + '\'' +
+                '}';
+    }
 }

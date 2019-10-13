@@ -9,6 +9,7 @@ import com.eem.demo.service.UserService;
 import com.eem.demo.service.impl.FriendServiceImpl;
 import com.eem.demo.util.JwtUtil;
 import com.eem.demo.util.Md5Util;
+import com.eem.demo.websocket.UserWebSocket;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +36,13 @@ public class DemoApplicationTests {
 
     @Test
     public void contextLoads() {
-        User user = userRepository.findByUsername("张三");
+        User user1 = new User();
+        user1.setUsername("王五");
+        user1.setPassword("666666");
+        System.out.println(userRepository.save(user1));
+
+
+        User user = userRepository.findByUsername("王五");
         System.out.println(user);
     }
 
@@ -78,5 +85,10 @@ public class DemoApplicationTests {
     @Test
     public void test_06(){
         friendServiceImpl.deleteFriend("3","李四");
+    }
+
+    @Test
+    public void test_07(){
+        System.out.println(UserWebSocket.users);
     }
 }

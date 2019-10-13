@@ -7,7 +7,7 @@
         //连接的方法
         var websocket = null;
         function subConnect() {
-            websocket = new WebSocket("ws://localhost:8080/websocket/user/张三");
+            websocket = new WebSocket("ws://localhost:8080/websocket/user/李四");
             websocket.onopen = function (ev) {
                 console.info("成功连接ws: " + ev);
             }
@@ -20,9 +20,7 @@
         function subSend(event) {
             var json = {
                 "from":"张三",
-                "formId":"",
                 "to":"李四",
-                "toId":"",
                 "msg":"这是发送信息的内容"
             };
             var s = JSON.stringify(json);

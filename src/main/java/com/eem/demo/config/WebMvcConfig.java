@@ -17,6 +17,7 @@ public class WebMvcConfig extends WebMvcConfigurationSupport {
     protected void addViewControllers(ViewControllerRegistry registry) {
         //测试网页
         registry.addViewController("/test").setViewName("/test");
+        registry.addViewController("/test1").setViewName("/test1");
     }
 
     /**
@@ -29,7 +30,7 @@ public class WebMvcConfig extends WebMvcConfigurationSupport {
                 //拦截全部
                 .addPathPatterns("/**")
                 //放行的请求
-                .excludePathPatterns("/login","/register","test");
+                .excludePathPatterns("/login","/register");
     }
 
     @Bean
