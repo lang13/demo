@@ -15,6 +15,10 @@
             websocket.onmessage = function (event) {
                 console.info("接收到的信息: " + event.data)
             }
+            //关闭连接
+            websocket.onclose = function(event) {
+                console.info("张三断开连接")
+            }
         }
         //发送信息的方法
         function subSend(event) {
@@ -29,10 +33,15 @@
             websocket.send(s);
             console.info("发送json: " + s);
         }
+        //关闭连接
+        function subClose() {
+            websocket.close();
+        }
     </script>
 </head>
 <body>
     <button onclick="subConnect()">连接WS</button><br></br>
     <button onclick="subSend();">send</button>
+    <button onclick="subClose();">close</button>
 </body>
 </html>

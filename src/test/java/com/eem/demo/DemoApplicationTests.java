@@ -7,6 +7,7 @@ import com.eem.demo.repository.FriendRepository;
 import com.eem.demo.repository.StateRepository;
 import com.eem.demo.repository.UserRepository;
 import com.eem.demo.service.FriendService;
+import com.eem.demo.service.StateService;
 import com.eem.demo.service.UserService;
 import com.eem.demo.service.impl.FriendServiceImpl;
 import com.eem.demo.util.JwtUtil;
@@ -39,6 +40,8 @@ public class DemoApplicationTests {
     @Autowired
     FriendService friendServiceImpl;
 
+    @Autowired
+    StateService stateServiceImpl;
     @Test
     public void contextLoads() {
         List<State> all = stateRepository.findAll();
@@ -91,6 +94,6 @@ public class DemoApplicationTests {
 
     @Test
     public void test_07(){
-        System.out.println(UserWebSocket.users);
+        System.out.println(stateServiceImpl);
     }
 }

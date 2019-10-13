@@ -1,7 +1,9 @@
 package com.eem.demo.service.impl;
 
+import com.eem.demo.entity.State;
 import com.eem.demo.entity.User;
 import com.eem.demo.repository.FriendRepository;
+import com.eem.demo.repository.StateRepository;
 import com.eem.demo.repository.UserRepository;
 import com.eem.demo.service.UserService;
 import com.eem.demo.util.Md5Util;
@@ -18,6 +20,9 @@ import java.util.List;
 @Service
 public class UserServiceImpl implements UserService {
     @Autowired
+    StateRepository stateRepository;
+
+    @Autowired
     UserRepository userRepository;
 
     @Autowired
@@ -30,6 +35,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User register(User user) {
+        //设置用户状态
+        State state = new State();
+        state.setState("离线");
+        state.setUsername(user.getUsername());
+        stateRepository.save(state);
+
         return userRepository.save(user);
     }
 

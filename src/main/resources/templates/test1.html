@@ -15,22 +15,31 @@
             websocket.onmessage = function (event) {
                 console.info("接收到的信息: " + event.data)
             }
+            //关闭连接
+            websocket.onclose = function(event) {
+                console.info("李四断开连接")
+            }
         }
         //发送信息的方法
         function subSend(event) {
             var json = {
-                "from":"张三",
-                "to":"李四",
+                "from":"李四",
+                "to":"张三",
                 "msg":"这是发送信息的内容"
             };
             var s = JSON.stringify(json);
             websocket.send(s);
             console.info("发送json: " + s);
         }
+        //关闭连接
+        function subClose() {
+            websocket.close();
+        }
     </script>
 </head>
 <body>
     <button onclick="subConnect()">连接WS</button><br></br>
     <button onclick="subSend();">send</button>
+    <button onclick="subClose();">close</button>
 </body>
 </html>
