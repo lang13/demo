@@ -1,8 +1,10 @@
 package com.eem.demo;
 
 import com.eem.demo.entity.Friend;
+import com.eem.demo.entity.State;
 import com.eem.demo.entity.User;
 import com.eem.demo.repository.FriendRepository;
+import com.eem.demo.repository.StateRepository;
 import com.eem.demo.repository.UserRepository;
 import com.eem.demo.service.FriendService;
 import com.eem.demo.service.UserService;
@@ -23,6 +25,9 @@ import java.util.List;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class DemoApplicationTests {
     @Autowired
+    StateRepository stateRepository;
+
+    @Autowired
     UserRepository userRepository;
 
     @Autowired
@@ -36,14 +41,11 @@ public class DemoApplicationTests {
 
     @Test
     public void contextLoads() {
-        User user1 = new User();
-        user1.setUsername("王五");
-        user1.setPassword("666666");
-        System.out.println(userRepository.save(user1));
-
-
-        User user = userRepository.findByUsername("王五");
-        System.out.println(user);
+        List<State> all = stateRepository.findAll();
+        for (int i = 0; i < all.size(); i++) {
+            all.get(i).setState("离线");
+            stateRepository.save(all.get(i));
+        }
     }
 
     @Test
