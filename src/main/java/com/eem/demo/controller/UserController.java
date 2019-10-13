@@ -1,17 +1,17 @@
 package com.eem.demo.controller;
 
+import com.eem.demo.entity.State;
 import com.eem.demo.entity.User;
 import com.eem.demo.pojo.ReturnObj;
 import com.eem.demo.repository.UserRepository;
 import com.eem.demo.service.FriendService;
+import com.eem.demo.service.StateService;
 import com.eem.demo.service.UserService;
 import com.eem.demo.util.JwtUtil;
 import com.eem.demo.util.Md5Util;
-import com.eem.demo.websocket.UserWebSocket;
 import org.apache.log4j.Logger;
 import org.aspectj.util.FileUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -47,6 +47,9 @@ public class UserController {
 
     @Autowired
     UserService getUserServiceImpl;
+
+    @Autowired
+    StateService stateServiceImpl;
     /**
      * 用户登陆
      * @param user
@@ -332,6 +335,21 @@ public class UserController {
             obj = ReturnObj.fail();
             obj.setMsg("查找好友失败!!!");
             obj.add("friends", null);
+        }
+        return obj;
+    }
+
+    @RequestMapping("/findFriendState")
+    public ReturnObj findFriendState(HttpServletRequest request){
+        ReturnObj obj;
+        String token = request.getHeader("token");
+        String userId = JwtUtil.getUserId(token);
+        List<State> friendState = stateServiceImpl.findFriendState(userId);
+        if (friendState != null){
+            obj = ReturnObj.success();
+            obj.add("friendState",friendState);
+        }else{
+            obj = ReturnObj.fail();
         }
         return obj;
     }

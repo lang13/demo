@@ -28,4 +28,5 @@ public interface FriendService {
      * @return
      */
     int deleteFriend(String userId, String friendName);
+
 }

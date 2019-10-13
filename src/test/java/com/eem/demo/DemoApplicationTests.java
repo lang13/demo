@@ -94,6 +94,7 @@ public class DemoApplicationTests {
 
     @Test
     public void test_07(){
-        System.out.println(stateServiceImpl);
+        List<State> states = stateServiceImpl.findFriendState("GDUT");
+        System.out.println(states);
     }
 }

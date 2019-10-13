@@ -19,4 +19,11 @@ public interface StateRepository extends JpaRepository<State,Integer> {
     @Modifying
     @Query(value = "update state set state = ?1 where username = ?2", nativeQuery = true)
     public int updateState(String state, String username);
+
+    /**
+     * 根据用户名查询用户状态信息
+     * @param username
+     * @return
+     */
+    public State findByUsername(String username);
 }
