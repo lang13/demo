@@ -4,7 +4,7 @@ package com.eem.demo.pojo;
  * 信息结构体
  * @author Administrator
  */
-public class Message {
+public class Message{
     /**
      * 发送人名字
      */

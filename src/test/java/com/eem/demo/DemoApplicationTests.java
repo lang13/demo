@@ -1,25 +1,26 @@
 package com.eem.demo;
 
-import com.eem.demo.entity.Friend;
+import com.alibaba.fastjson.JSON;
 import com.eem.demo.entity.State;
 import com.eem.demo.entity.User;
+import com.eem.demo.pojo.Message;
 import com.eem.demo.repository.FriendRepository;
 import com.eem.demo.repository.StateRepository;
 import com.eem.demo.repository.UserRepository;
 import com.eem.demo.service.FriendService;
 import com.eem.demo.service.StateService;
 import com.eem.demo.service.UserService;
-import com.eem.demo.service.impl.FriendServiceImpl;
 import com.eem.demo.util.JwtUtil;
 import com.eem.demo.util.Md5Util;
-import com.eem.demo.websocket.UserWebSocket;
+import com.google.gson.Gson;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.transaction.annotation.Transactional;
 
+import java.io.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @RunWith(SpringRunner.class)
@@ -96,5 +97,59 @@ public class DemoApplicationTests {
     public void test_07(){
         List<State> states = stateServiceImpl.findFriendState("GDUT");
         System.out.println(states);
+    }
+
+    @Test
+    public void test_08(){
+        File file = new File("c:/emm/test/test.txt");
+        if (!file.exists()){
+            file.getParentFile().mkdirs();
+        }
+        List<Message> messages = new ArrayList<>();
+        try(
+                FileWriter fileWriter = new FileWriter(file,true);
+                ){
+            for (int i = 10; i < 20; i++) {
+                Message message = new Message();
+                message.setFrom(String.valueOf(i));
+                message.setTo(String.valueOf(i+1));
+                message.setMsg("这是信息内容: " + i);
+                messages.add(message);
+            }
+            Gson gson = new Gson();
+            String json = gson.toJson(messages);
+            fileWriter.write(json);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void test_09(){
+        File file = new File("c:/emm/test/test.txt");
+        try(
+                FileReader fileReader = new FileReader(file);
+                ){
+            char[] chars = new char[(int)file.length()];
+            fileReader.read(chars);
+            String msg = new String(chars);
+            System.out.println(msg);
+
+            List<Message> messages = JSON.parseArray(msg, Message.class);
+            System.out.println(messages);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void test_10(){
+        String data;
+        String from;
+        String to;
+        String record = "";
     }
 }
