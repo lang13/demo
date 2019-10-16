@@ -47,7 +47,7 @@ public class UserWebSocket {
     private static Logger logger = Logger.getLogger(UserWebSocket.class);
 
     @OnOpen
-    public void onOpen(Session session, @PathParam("username")String username){
+    private void onOpen(Session session, @PathParam("username")String username){
         logger.info(username + "成功登陆!!!");
         //放入session
         users.put(username,session);
@@ -72,7 +72,7 @@ public class UserWebSocket {
     }
 
     @OnClose
-    public void onClose(Session session, @PathParam("username")String username){
+    private void onClose(Session session, @PathParam("username")String username){
         logger.info(username + "断开连接!!!");
         //除去session
         users.remove(username);
@@ -88,7 +88,7 @@ public class UserWebSocket {
      * 打算弃用这个方式来接收信息
      */
     @OnMessage
-    public void onMessage(String msg){
+    private void onMessage(String msg){
         logger.info("接收到的meg: " + msg);
         JSONObject jsonObject = JSON.parseObject(msg);
         logger.info("转化为json格式后的msg: " + jsonObject);
@@ -97,7 +97,7 @@ public class UserWebSocket {
     }
 
     @OnError
-    public void onError(Session session, Throwable error) {
+    private void onError(Session session, Throwable error) {
         logger.info("发生错误" + new Date());
         error.printStackTrace();
     }
@@ -108,7 +108,7 @@ public class UserWebSocket {
      * @param toName
      * @param msg
      */
-    public void sendMsg(String toName, JSONObject msg){
+    private void sendMsg(String toName, JSONObject msg){
         Session session = users.get(toName);
         if (session != null){
             session.getAsyncRemote().sendText(msg.toJSONString());

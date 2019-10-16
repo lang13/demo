@@ -3,6 +3,8 @@ package com.eem.demo.entity;
 import javax.persistence.*;
 
 /**
+ * 房间基本信息表
+ * 不包括群成员
  * @author Administrator
  */
 @Table
@@ -21,37 +23,12 @@ public class Room {
     @Column
     private String roomName;
 
-    @Column
-    private String roomId;
-
-    @Column
-    private String member;
-
-    @Column
-    private int memberId;
-
-    public int getMasterId() {
-        return masterId;
+    public String getMaster() {
+        return master;
     }
 
-    public void setMasterId(int masterId) {
-        this.masterId = masterId;
-    }
-
-    public String getRoomId() {
-        return roomId;
-    }
-
-    public void setRoomId(String roomId) {
-        this.roomId = roomId;
-    }
-
-    public int getMemberId() {
-        return memberId;
-    }
-
-    public void setMemberId(int memberId) {
-        this.memberId = memberId;
+    public void setMaster(String master) {
+        this.master = master;
     }
 
     public int getId() {
@@ -62,12 +39,12 @@ public class Room {
         this.id = id;
     }
 
-    public String getMaster() {
-        return master;
+    public int getMasterId() {
+        return masterId;
     }
 
-    public void setMaster(String master) {
-        this.master = master;
+    public void setMasterId(int masterId) {
+        this.masterId = masterId;
     }
 
     public String getRoomName() {
@@ -76,13 +53,5 @@ public class Room {
 
     public void setRoomName(String roomName) {
         this.roomName = roomName;
-    }
-
-    public String getMember() {
-        return member;
-    }
-
-    public void setMember(String member) {
-        this.member = member;
     }
 }

@@ -10,6 +10,7 @@ public interface RoomService {
      * 利用群名和群主名创建一个群聊
      * @param roomName
      * @param masterName
+     * @param masterId
      * @return
      */
     Room createRoom(String roomName, String masterName, String masterId);

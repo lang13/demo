@@ -21,6 +21,7 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
@@ -117,7 +118,7 @@ public class UserController {
         //新建文件类
         File dest = new File(filename);
         //创建文件目录
-        if (dest.getParentFile() !=null && !dest.getParentFile().exists()) {
+        if (dest.getParentFile() == null && !dest.getParentFile().exists()) {
             dest.getParentFile().mkdirs();
         }
         try {
@@ -382,6 +383,25 @@ public class UserController {
             obj.setMsg("删除好友失败!!!");
             return obj;
         }
+    }
+
+    @RequestMapping("/sendFile")
+    public void receiveField(MultipartFile file, String toName){
+        String originalFilename = file.getOriginalFilename();
+        //获取后缀名
+        String suffix  = originalFilename.substring(originalFilename.lastIndexOf("."));
+        String uuid = UUID.randomUUID().toString();
+        //创建文件对象
+        File dest = new File("C:/eem/test/"+uuid+suffix);
+        //将文件保存到硬盘
+        FileInputStream fileInputStream;
+        try {
+            file.transferTo(dest);
+            fileInputStream = new FileInputStream(dest);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        //获取dest的流数据
     }
 }
 
