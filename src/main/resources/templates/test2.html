@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"></meta>
+    <title>test</title>
+    <script>
+        //连接的方法
+        var websocket = null;
+        function subConnect() {
+            websocket = new WebSocket("ws://localhost:8080/websocket/user/张三");
+            websocket.onopen = function (ev) {
+                console.info("成功连接ws: " + ev);
+            }
+            //接收信息的onmessage必须在connect里面
+            websocket.onmessage = function (event) {
+                console.info("接收到的信息: " + event.data)
+            }
+            //关闭连接
+            websocket.onclose = function(event) {
+                console.info("张三断开连接")
+            }
+        }
+        //发送信息的方法
+        function subSend(event) {
+            //获取文件
+            var elementById = document.getElementById("file");
+            var files = elementById.files;
+            var file = files[0];
+            //FileReader
+            var reader = new FileReader();
+            reader.readAsArrayBuffer(file);
+            var d;
+            reader.onload = function (ev) {
+                d = ev.result;
+                console.info("d的值为: " + d);
+                console.info("ev的值为: " +ev.toString());
+            }
+            var json = {
+                "from":"张三",
+                "formId":"",
+                "to":"李四",
+                "toId":"",
+                "file":d,
+                "msg":"这是发送信息的内容"
+            };
+            var s = JSON.stringify(json);
+            websocket.send(s);
+            console.info("发送json: " + s);
+        }
+        //关闭连接
+        function subClose() {
+            websocket.close();
+        }
+    </script>
+</head>
+<body>
+    <button onclick="subConnect()">连接WS</button><br></br>
+    <button onclick="subSend();">send</button>
+    <button onclick="subClose();">close</button><br></br>
+    <input type="file" id="file"></input>
+</body>
+
+</html>
