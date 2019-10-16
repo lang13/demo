@@ -32,7 +32,8 @@ public class InterceptorConfig implements HandlerInterceptor {
         }
 
         System.out.println("方法被拦截...");
-        return true;        //测试,调为true
+        return false;
+        //测试,调为true
     }
 
     @Override

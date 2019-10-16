@@ -12,5 +12,5 @@ public interface RoomService {
      * @param masterName
      * @return
      */
-    Room createRoom(String roomName, String masterName);
+    Room createRoom(String roomName, String masterName, String masterId);
 }

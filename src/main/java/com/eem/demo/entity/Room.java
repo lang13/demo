@@ -16,10 +16,43 @@ public class Room {
     private String master;
 
     @Column
+    private int masterId;
+
+    @Column
     private String roomName;
 
     @Column
+    private String roomId;
+
+    @Column
     private String member;
+
+    @Column
+    private int memberId;
+
+    public int getMasterId() {
+        return masterId;
+    }
+
+    public void setMasterId(int masterId) {
+        this.masterId = masterId;
+    }
+
+    public String getRoomId() {
+        return roomId;
+    }
+
+    public void setRoomId(String roomId) {
+        this.roomId = roomId;
+    }
+
+    public int getMemberId() {
+        return memberId;
+    }
+
+    public void setMemberId(int memberId) {
+        this.memberId = memberId;
+    }
 
     public int getId() {
         return id;

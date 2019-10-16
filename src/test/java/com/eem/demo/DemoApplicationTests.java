@@ -23,6 +23,7 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -161,8 +162,7 @@ public class DemoApplicationTests {
 
     @Test
     public void test_11(){
-        int i = 1;
-        i = (++i)+(++i);
-        System.out.println(i);
+        String string = UUID.randomUUID().toString().substring(0,4);
+        System.out.println(string);
     }
 }

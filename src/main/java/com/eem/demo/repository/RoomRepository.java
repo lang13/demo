@@ -8,4 +8,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
  */
 public interface RoomRepository extends JpaRepository<Room, Integer> {
 
+    /**
+     * 根据房间名查询房间是否存在
+     * @param roomName
+     * @return
+     */
+    public Room findByRoomName(String roomName);
 }
