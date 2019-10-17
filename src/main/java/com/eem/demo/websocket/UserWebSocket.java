@@ -108,7 +108,7 @@ public class UserWebSocket {
      * @param toName
      * @param msg
      */
-    private void sendMsg(String toName, JSONObject msg){
+    public static void sendMsg(String toName, JSONObject msg){
         Session session = users.get(toName);
         if (session != null){
             session.getAsyncRemote().sendText(msg.toJSONString());

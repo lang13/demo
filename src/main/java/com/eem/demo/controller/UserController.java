@@ -1,5 +1,7 @@
 package com.eem.demo.controller;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.eem.demo.entity.State;
 import com.eem.demo.entity.User;
 import com.eem.demo.pojo.ReturnObj;
@@ -9,6 +11,7 @@ import com.eem.demo.service.StateService;
 import com.eem.demo.service.UserService;
 import com.eem.demo.util.JwtUtil;
 import com.eem.demo.util.Md5Util;
+import com.eem.demo.websocket.UserWebSocket;
 import org.apache.log4j.Logger;
 import org.aspectj.util.FileUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,9 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.List;
 import java.util.UUID;
 
@@ -386,7 +387,9 @@ public class UserController {
     }
 
     @RequestMapping("/sendFile")
-    public void receiveField(MultipartFile file, String toName){
+    public void receiveField(MultipartFile file, String toName, HttpServletRequest request){
+        String token = request.getHeader("token");
+        String username = JwtUtil.getUsername(token);
         String originalFilename = file.getOriginalFilename();
         //获取后缀名
         String suffix  = originalFilename.substring(originalFilename.lastIndexOf("."));
@@ -394,14 +397,16 @@ public class UserController {
         //创建文件对象
         File dest = new File("C:/eem/test/"+uuid+suffix);
         //将文件保存到硬盘
-        FileInputStream fileInputStream;
         try {
             file.transferTo(dest);
-            fileInputStream = new FileInputStream(dest);
+            byte[] bytes = FileUtil.readAsByteArray(dest);
+            String msg = new String(bytes);
+            JSONObject jsonObject = JSON.parseObject(msg);
+            jsonObject.put("from","username");
+            UserWebSocket.sendMsg(toName, jsonObject);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        //获取dest的流数据
     }
 }
 
