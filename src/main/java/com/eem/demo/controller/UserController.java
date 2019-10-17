@@ -1,13 +1,14 @@
 package com.eem.demo.controller;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.eem.demo.entity.State;
+import com.eem.demo.entity.Temp;
 import com.eem.demo.entity.User;
 import com.eem.demo.pojo.ReturnObj;
 import com.eem.demo.repository.UserRepository;
 import com.eem.demo.service.FriendService;
 import com.eem.demo.service.StateService;
+import com.eem.demo.service.TempService;
 import com.eem.demo.service.UserService;
 import com.eem.demo.util.JwtUtil;
 import com.eem.demo.util.Md5Util;
@@ -23,7 +24,9 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.*;
+import javax.websocket.server.PathParam;
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 
@@ -52,6 +55,9 @@ public class UserController {
 
     @Autowired
     StateService stateServiceImpl;
+
+    @Autowired
+    TempService tempServiceImpl;
     /**
      * 用户登陆
      * @param user
@@ -387,7 +393,7 @@ public class UserController {
     }
 
     @RequestMapping("/sendFile")
-    public void receiveField(MultipartFile file, String toName, HttpServletRequest request){
+    public void receiveField(@RequestParam("file") MultipartFile file, String toName, HttpServletRequest request){
         String token = request.getHeader("token");
         String username = JwtUtil.getUsername(token);
         String originalFilename = file.getOriginalFilename();
@@ -395,19 +401,42 @@ public class UserController {
         String suffix  = originalFilename.substring(originalFilename.lastIndexOf("."));
         String uuid = UUID.randomUUID().toString();
         //创建文件对象
-        File dest = new File("C:/eem/test/"+uuid+suffix);
+        File dest = new File("C:/emm/test/"+uuid+suffix);
         //将文件保存到硬盘
         try {
+            //文件信息保存至数据库
+            Temp tempFile = new Temp();
+            //设置file类
+            tempFile.setFilePath(dest.toString());
+            tempFile.setReceive(toName);
+            tempFile.setSender(username);
+            tempServiceImpl.saveFile(tempFile);
+            logger.info("文件: " + dest);
             file.transferTo(dest);
-            byte[] bytes = FileUtil.readAsByteArray(dest);
-            String msg = new String(bytes);
-            JSONObject jsonObject = JSON.parseObject(msg);
-            jsonObject.put("from","username");
-            UserWebSocket.sendMsg(toName, jsonObject);
+            //WebSocket发送信息
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("type","file");
+            jsonObject.put("value","/receiveFile/"+uuid+suffix);
+            jsonObject.put("from",username);
+            jsonObject.put("to",toName);
+            logger.info("发送的json: " + jsonObject);
+            UserWebSocket.sendMsg(toName,jsonObject);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @RequestMapping("/receiveFile/{fileName}")
+    public void receiveFile(@PathParam("fileName") String fileName, HttpServletResponse response){
+        File file = new File("C:/emm/test/" + fileName);
+        try {
+            byte[] bytes = FileUtil.readAsByteArray(file);
+            ServletOutputStream stream = response.getOutputStream();
+            stream.write(bytes);
+            stream.flush();
+            stream.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 }
-
-

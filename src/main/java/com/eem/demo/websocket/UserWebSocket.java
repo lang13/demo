@@ -20,8 +20,8 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * @author Administrator
  */
-@ServerEndpoint("/websocket/user/{username}")
 @Component
+@ServerEndpoint("/websocket/user/{username}")
 public class UserWebSocket {
     /**获取stateServiceImpl*/
     private StateService stateServiceImpl = (StateService)SpringUtil.getBean("stateServiceImpl");
@@ -47,7 +47,7 @@ public class UserWebSocket {
     private static Logger logger = Logger.getLogger(UserWebSocket.class);
 
     @OnOpen
-    private void onOpen(Session session, @PathParam("username")String username){
+    public void onOpen(Session session, @PathParam("username")String username){
         logger.info(username + "成功登陆!!!");
         //放入session
         users.put(username,session);
@@ -72,7 +72,7 @@ public class UserWebSocket {
     }
 
     @OnClose
-    private void onClose(Session session, @PathParam("username")String username){
+    public void onClose(Session session, @PathParam("username")String username){
         logger.info(username + "断开连接!!!");
         //除去session
         users.remove(username);
@@ -88,7 +88,7 @@ public class UserWebSocket {
      * 打算弃用这个方式来接收信息
      */
     @OnMessage
-    private void onMessage(String msg){
+    public void onMessage(String msg){
         logger.info("接收到的meg: " + msg);
         JSONObject jsonObject = JSON.parseObject(msg);
         logger.info("转化为json格式后的msg: " + jsonObject);
@@ -97,7 +97,7 @@ public class UserWebSocket {
     }
 
     @OnError
-    private void onError(Session session, Throwable error) {
+    public void onError(Session session, Throwable error) {
         logger.info("发生错误" + new Date());
         error.printStackTrace();
     }
@@ -129,3 +129,4 @@ public class UserWebSocket {
         }
     }
 }
+
