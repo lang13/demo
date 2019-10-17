@@ -16,6 +16,7 @@ import com.eem.demo.websocket.UserWebSocket;
 import org.apache.log4j.Logger;
 import org.aspectj.util.FileUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,7 +25,6 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.websocket.server.PathParam;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -410,13 +410,13 @@ public class UserController {
             tempFile.setFilePath(dest.toString());
             tempFile.setReceive(toName);
             tempFile.setSender(username);
-            tempServiceImpl.saveFile(tempFile);
+            Temp temp = tempServiceImpl.saveFile(tempFile);
             logger.info("文件: " + dest);
             file.transferTo(dest);
             //WebSocket发送信息
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("type","file");
-            jsonObject.put("value","/receiveFile/"+uuid+suffix);
+            jsonObject.put("value","/receiveFile/" + temp.getId());
             jsonObject.put("from",username);
             jsonObject.put("to",toName);
             logger.info("发送的json: " + jsonObject);
@@ -426,17 +426,22 @@ public class UserController {
         }
     }
 
-    @RequestMapping("/receiveFile/{fileName}")
-    public void receiveFile(@PathParam("fileName") String fileName, HttpServletResponse response){
-        File file = new File("C:/emm/test/" + fileName);
-        try {
-            byte[] bytes = FileUtil.readAsByteArray(file);
-            ServletOutputStream stream = response.getOutputStream();
-            stream.write(bytes);
-            stream.flush();
-            stream.close();
-        } catch (IOException e) {
-            e.printStackTrace();
+    @RequestMapping("/receiveFile/{fileId}")
+    public void receiveFile(@PathVariable("fileId") String fileId, HttpServletResponse response){
+        logger.info("接收到的fileId: " + fileId);
+        String filePath = tempServiceImpl.findFilePath(fileId);
+        File file = new File(filePath);
+        logger.info("创建的file: " + file);
+        if (file.exists()){
+            try {
+                byte[] bytes = FileUtil.readAsByteArray(file);
+                ServletOutputStream stream = response.getOutputStream();
+                stream.write(bytes);
+                stream.flush();
+                stream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 }

@@ -9,4 +9,11 @@ public interface TempService {
      * @return
      */
     Temp saveFile(Temp file);
+
+    /**
+     * 根据文件id查找文件名
+     * @param id
+     * @return
+     */
+    String findFilePath(String id);
 }
