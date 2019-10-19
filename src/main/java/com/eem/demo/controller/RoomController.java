@@ -106,8 +106,15 @@ public class RoomController {
             obj.setMsg("查询群聊成员失败!!!");
         }else{
             obj = ReturnObj.success();
+            //查询群主
+            User roomMaster = roomServiceImpl.findRoomMaster(roomId);
             obj.add("roomMember", roomMember);
+            obj.add("roomMaster", roomMaster);
         }
         return obj;
     }
+
+    //更改房间群主
+    //发送文件
+    //移除某人
 }

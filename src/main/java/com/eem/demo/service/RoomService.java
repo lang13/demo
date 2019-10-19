@@ -30,6 +30,13 @@ public interface RoomService {
     List<User> findRoomMember(String roomId);
 
     /**
+     * 查询群聊的群主
+     * @param roomId
+     * @return
+     */
+    User findRoomMaster(String roomId);
+
+    /**
      * 根据用户名和房间号
      * 拉用户进入聊天群
      * @param username

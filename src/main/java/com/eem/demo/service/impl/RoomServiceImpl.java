@@ -54,6 +54,14 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
+    public User findRoomMaster(String roomId) {
+        Room room = roomRepository.findOne(Integer.valueOf(roomId));
+        int id = room.getId();
+        User one = userRepository.findOne(id);
+        return one;
+    }
+
+    @Override
     public RoomMember addRoomMember(String username, String roomId) {
         User user = userRepository.findByUsername(username);
         RoomMember roomMember = new RoomMember();

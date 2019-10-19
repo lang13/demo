@@ -34,15 +34,18 @@ public class RoomWebSocket {
     @OnOpen
     public void onOpen(@PathParam("username") String username, @PathParam("roomId") String roomId,
                        Session session){
-        ConcurrentHashMap<String, Session> users = rooms.get("roomId");
+        ConcurrentHashMap<String, Session> users = rooms.get(roomId);
         //判断房间是否是空的
         if(users == null){
             //如果是空的,就创建一个房间
             users = new ConcurrentHashMap<>();
+            logger.info("创建房间" + roomId);
             rooms.put(roomId, users);
         }
         //把自己塞进房间
         users.put(username, session);
+        //把房间塞入rooms
+        rooms.put(roomId, users);
         logger.info(roomId + "房间包含的成员: " + users);
         //保存username,roomId,和session
         this.session = session;
@@ -62,6 +65,7 @@ public class RoomWebSocket {
 
     @OnMessage
     public void onMessage(String msg){
+        logger.info("收到的msg为: " + msg);
         JSONObject object = JSON.parseObject(msg);
         String username = object.getString("from");
         String roomId = object.getString("to");
