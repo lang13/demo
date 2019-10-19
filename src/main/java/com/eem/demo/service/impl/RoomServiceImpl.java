@@ -9,6 +9,7 @@ import com.eem.demo.repository.UserRepository;
 import com.eem.demo.service.RoomService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -68,5 +69,13 @@ public class RoomServiceImpl implements RoomService {
         }else{
             return member;
         }
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public int deleteMember(String username, String roomId) {
+        User user = userRepository.findByUsername(username);
+        int i = roomMemberRepository.deleteByMemberIdAndRoomId(user.getId(), Integer.valueOf(roomId));
+        return i;
     }
 }

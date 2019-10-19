@@ -8,6 +8,7 @@ import com.eem.demo.pojo.ReturnObj;
 import com.eem.demo.service.RoomService;
 import com.eem.demo.service.UserService;
 import com.eem.demo.util.JwtUtil;
+import com.eem.demo.websocket.RoomWebSocket;
 import com.eem.demo.websocket.UserWebSocket;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -78,6 +79,19 @@ public class RoomController {
         return obj;
     }
 
+    @RequestMapping("/deleteRoomMember")
+    public ReturnObj deleteRoomMember(String username, String roomId){
+        ReturnObj obj = null;
+        int i = roomServiceImpl.deleteMember(username, roomId);
+        if(i > 0){
+            obj = ReturnObj.success();
+            //移除session
+            RoomWebSocket.deleteOne(username, roomId);
+        }else{
+            obj = ReturnObj.fail();
+        }
+        return obj;
+    }
     /**
      * 根据房间id查找房间成员
      * @param roomId

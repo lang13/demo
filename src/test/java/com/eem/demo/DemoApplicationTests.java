@@ -167,7 +167,6 @@ public class DemoApplicationTests {
     RoomService roomServiceImpl;
     @Test
     public void test_11(){
-        RoomMember roomMember = roomServiceImpl.addRoomMember("GDUT", "1");
-        System.out.println(roomMember);
+        roomServiceImpl.deleteMember("GDUT","1");
     }
 }

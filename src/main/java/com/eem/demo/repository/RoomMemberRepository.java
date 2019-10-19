@@ -27,5 +27,12 @@ public interface RoomMemberRepository extends JpaRepository<RoomMember, Integer>
      */
     public RoomMember findRoomMemberByMemberIdAndRoomId(Integer memberId, Integer roomId);
 
-
+    /**
+     * 根据房间id和用户id
+     * 把用户移出群聊
+     * @param memberId
+     * @param roomId
+     * @return
+     */
+    public int deleteByMemberIdAndRoomId(Integer memberId, Integer roomId);
 }

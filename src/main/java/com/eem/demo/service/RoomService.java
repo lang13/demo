@@ -37,4 +37,13 @@ public interface RoomService {
      * @return RoomMember
      */
     RoomMember addRoomMember(String username, String roomId);
+
+    /**
+     * 根据用户id和房间id
+     * 把用户移除群聊
+     * @param username
+     * @param roomId
+     * @return
+     */
+    int deleteMember(String username, String roomId);
 }
