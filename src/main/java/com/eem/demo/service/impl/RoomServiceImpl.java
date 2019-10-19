@@ -2,13 +2,15 @@ package com.eem.demo.service.impl;
 
 import com.eem.demo.entity.Room;
 import com.eem.demo.entity.RoomMember;
+import com.eem.demo.entity.User;
 import com.eem.demo.repository.RoomMemberRepository;
 import com.eem.demo.repository.RoomRepository;
+import com.eem.demo.repository.UserRepository;
 import com.eem.demo.service.RoomService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.UUID;
+import java.util.List;
 
 /**
  * @author Administrator
@@ -20,6 +22,9 @@ public class RoomServiceImpl implements RoomService {
 
     @Autowired
     RoomMemberRepository roomMemberRepository;
+
+    @Autowired
+    UserRepository userRepository;
 
     @Override
     public Room createRoom(String roomName, String masterName, String masterId) {
@@ -38,5 +43,12 @@ public class RoomServiceImpl implements RoomService {
         roomMemberRepository.save(roomMember);
 
         return roomRepository.save(room);
+    }
+
+    @Override
+    public List<User> findRoomMember(String roomId) {
+        List<Integer> memberId = roomMemberRepository.findMemberId(roomId);
+        List<User> all = userRepository.findAll(memberId);
+        return all;
     }
 }

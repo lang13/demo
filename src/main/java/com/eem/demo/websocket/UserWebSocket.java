@@ -72,7 +72,7 @@ public class UserWebSocket {
     }
 
     @OnClose
-    public void onClose(Session session, @PathParam("username")String username){
+    public void onClose(@PathParam("username")String username){
         logger.info(username + "断开连接!!!");
         //除去session
         users.remove(username);
@@ -97,7 +97,7 @@ public class UserWebSocket {
     }
 
     @OnError
-    public void onError(Session session, Throwable error) {
+    public void onError(Throwable error) {
         logger.info("发生错误" + new Date());
         error.printStackTrace();
     }
@@ -113,7 +113,7 @@ public class UserWebSocket {
         if (session != null){
             session.getAsyncRemote().sendText(msg.toJSONString());
         }else{
-            if (temp.get(toName) == null){
+            if (null == temp.get(toName)){
                 List<JSONObject> jsonObjects = new ArrayList<>();
                 jsonObjects.add(msg);
                 //添加进去

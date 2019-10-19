@@ -281,6 +281,35 @@ public class UserController {
     }
 
     /**
+     * 根据用户id请求添加好友
+     * @param friendName
+     */
+    @RequestMapping("/requestFriend")
+    public ReturnObj requestFriend(String friendName, HttpServletRequest request){
+        ReturnObj obj;
+
+        String token = request.getHeader("token");
+        String username = JwtUtil.getUsername(token);
+        String userId = JwtUtil.getUserId(token);
+        if(userServiceImpl.exists(friendName)){
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("type", "inform");
+            jsonObject.put("value",username + "请求添加好友!!!");
+            jsonObject.put("to", friendName);
+            jsonObject.put("from", username);
+            jsonObject.put("fromId", userId);
+            //发送WebSocket
+            UserWebSocket.sendMsg(friendName,jsonObject);
+
+            obj = ReturnObj.success();
+        }else{
+            obj = ReturnObj.fail();
+            obj.setMsg("用户不存在!!!");
+        }
+        return obj;
+    }
+
+    /**
      * 根据用户名添加好友
      * @param fiendName
      * @param request

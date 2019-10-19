@@ -1,6 +1,7 @@
 package com.eem.demo.controller;
 
 import com.eem.demo.entity.Room;
+import com.eem.demo.entity.User;
 import com.eem.demo.pojo.ReturnObj;
 import com.eem.demo.service.RoomService;
 import com.eem.demo.service.UserService;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
  * @author Administrator
@@ -42,6 +44,20 @@ public class RoomController {
             obj.add("room",room);
         }else{
             obj = ReturnObj.fail();
+        }
+        return obj;
+    }
+
+    @RequestMapping("/findRoomMember")
+    public ReturnObj findRoomMember(String roomId){
+        ReturnObj obj;
+        List<User> roomMember = roomServiceImpl.findRoomMember(roomId);
+        if (roomMember.isEmpty()){
+            obj = ReturnObj.fail();
+            obj.setMsg("查询群聊成员失败!!!");
+        }else{
+            obj = ReturnObj.success();
+            obj.add("roomMember", roomMember);
         }
         return obj;
     }

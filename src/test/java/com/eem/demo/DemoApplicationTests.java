@@ -4,10 +4,9 @@ import com.alibaba.fastjson.JSON;
 import com.eem.demo.entity.State;
 import com.eem.demo.entity.User;
 import com.eem.demo.pojo.Message;
-import com.eem.demo.repository.FriendRepository;
-import com.eem.demo.repository.StateRepository;
-import com.eem.demo.repository.UserRepository;
+import com.eem.demo.repository.*;
 import com.eem.demo.service.FriendService;
+import com.eem.demo.service.RoomService;
 import com.eem.demo.service.StateService;
 import com.eem.demo.service.UserService;
 import com.eem.demo.util.JwtUtil;
@@ -160,9 +159,14 @@ public class DemoApplicationTests {
         System.out.printf(record,data,from,to,msg);
     }
 
+    @Autowired
+    RoomMemberRepository roomMemberRepository;
+
+    @Autowired
+    RoomService roomServiceImpl;
     @Test
     public void test_11(){
-        String string = UUID.randomUUID().toString().substring(0,4);
-        System.out.println(string);
+        List<User> roomMember = roomServiceImpl.findRoomMember("1");
+        System.out.println(roomMember);
     }
 }
