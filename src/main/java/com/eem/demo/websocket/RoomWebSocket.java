@@ -94,4 +94,16 @@ public class RoomWebSocket {
             }
         }
     }
+
+    /**
+     * 将某人从某个群中移除
+     * @param username
+     * @param roomId
+     */
+    public static void deleteOne(String username, String roomId){
+        ConcurrentHashMap<String, Session> users = rooms.get(roomId);
+        if (users.containsKey(username)){
+            users.remove(username);
+        }
+    }
 }

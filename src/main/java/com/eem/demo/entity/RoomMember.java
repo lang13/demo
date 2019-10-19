@@ -42,4 +42,13 @@ public class RoomMember{
     public void setMemberId(int memberId) {
         this.memberId = memberId;
     }
+
+    @Override
+    public String toString() {
+        return "RoomMember{" +
+                "id=" + id +
+                ", roomId=" + roomId +
+                ", memberId=" + memberId +
+                '}';
+    }
 }

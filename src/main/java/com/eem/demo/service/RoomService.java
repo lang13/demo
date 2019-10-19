@@ -1,6 +1,7 @@
 package com.eem.demo.service;
 
 import com.eem.demo.entity.Room;
+import com.eem.demo.entity.RoomMember;
 import com.eem.demo.entity.User;
 
 import java.util.List;
@@ -27,4 +28,13 @@ public interface RoomService {
      * @return
      */
     List<User> findRoomMember(String roomId);
+
+    /**
+     * 根据用户名和房间号
+     * 拉用户进入聊天群
+     * @param username
+     * @param roomId
+     * @return RoomMember
+     */
+    RoomMember addRoomMember(String username, String roomId);
 }

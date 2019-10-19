@@ -1,6 +1,7 @@
 package com.eem.demo;
 
 import com.alibaba.fastjson.JSON;
+import com.eem.demo.entity.RoomMember;
 import com.eem.demo.entity.State;
 import com.eem.demo.entity.User;
 import com.eem.demo.pojo.Message;
@@ -166,7 +167,7 @@ public class DemoApplicationTests {
     RoomService roomServiceImpl;
     @Test
     public void test_11(){
-        List<User> roomMember = roomServiceImpl.findRoomMember("1");
+        RoomMember roomMember = roomServiceImpl.addRoomMember("GDUT", "1");
         System.out.println(roomMember);
     }
 }

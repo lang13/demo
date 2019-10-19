@@ -1,11 +1,14 @@
 package com.eem.demo.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.eem.demo.entity.Room;
+import com.eem.demo.entity.RoomMember;
 import com.eem.demo.entity.User;
 import com.eem.demo.pojo.ReturnObj;
 import com.eem.demo.service.RoomService;
 import com.eem.demo.service.UserService;
 import com.eem.demo.util.JwtUtil;
+import com.eem.demo.websocket.UserWebSocket;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -48,6 +51,38 @@ public class RoomController {
         return obj;
     }
 
+    /**
+     * 根据用户名和房间id
+     * 拉用户进入群聊
+     * @param username
+     * @param roomId
+     * @return
+     */
+    public ReturnObj addRoomMember(String username, String roomId, HttpServletRequest request){
+        String token = request.getHeader("token");
+        String from = JwtUtil.getUsername(token);
+        ReturnObj obj;
+        RoomMember roomMember = roomServiceImpl.addRoomMember(username, roomId);
+        if (roomMember == null){
+            obj = ReturnObj.fail();
+        }else{
+            obj = ReturnObj.success();
+            //向被邀请者发送信息,告知他已经加入群聊,让小程序新建该房间的WebSocket
+            JSONObject object = new JSONObject();
+            object.put("type", "inform");
+            object.put("value", from + "邀请你加入群聊");
+            object.put("to", username);
+            object.put("from", from);
+            UserWebSocket.sendMsg(username, object);
+        }
+        return obj;
+    }
+
+    /**
+     * 根据房间id查找房间成员
+     * @param roomId
+     * @return
+     */
     @RequestMapping("/findRoomMember")
     public ReturnObj findRoomMember(String roomId){
         ReturnObj obj;

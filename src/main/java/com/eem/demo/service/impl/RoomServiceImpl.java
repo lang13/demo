@@ -51,4 +51,22 @@ public class RoomServiceImpl implements RoomService {
         List<User> all = userRepository.findAll(memberId);
         return all;
     }
+
+    @Override
+    public RoomMember addRoomMember(String username, String roomId) {
+        User user = userRepository.findByUsername(username);
+        RoomMember roomMember = new RoomMember();
+        //判断是否已经在群聊
+        RoomMember member =
+                roomMemberRepository.findRoomMemberByMemberIdAndRoomId(user.getId(), Integer.valueOf(roomId));
+        if (member == null){
+            //设置roomMember类
+            roomMember.setMemberId(user.getId());
+            roomMember.setRoomId(Integer.parseInt(roomId));
+            //保存roomMember类
+            return roomMemberRepository.save(roomMember);
+        }else{
+            return member;
+        }
+    }
 }

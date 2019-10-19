@@ -17,4 +17,15 @@ public interface RoomMemberRepository extends JpaRepository<RoomMember, Integer>
      */
     @Query(value = "SELECT member_id FROM room_member WHERE room_id = ?1", nativeQuery = true)
     public List<Integer> findMemberId(String roomId);
+
+    /**
+     * 根据房间id和用户id
+     * 查询用户是否已在群聊
+     * @param memberId
+     * @param roomId
+     * @return
+     */
+    public RoomMember findRoomMemberByMemberIdAndRoomId(Integer memberId, Integer roomId);
+
+
 }
