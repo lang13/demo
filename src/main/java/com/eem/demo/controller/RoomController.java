@@ -149,6 +149,31 @@ public class RoomController {
         }
         return obj;
     }
-    //更改群名字
+
+    /**
+     * 修改群聊房间名
+     * @param roomName
+     * @param roomId
+     * @param request
+     * @return
+     */
+    public ReturnObj updateRoomName(String roomName, String roomId, HttpServletRequest request){
+        ReturnObj obj;
+        //获取用户名
+        String token = request.getHeader("token");
+        String username = JwtUtil.getUsername(token);
+        if(!roomServiceImpl.isMaster(username, roomId)){
+            obj = ReturnObj.fail();
+            obj.setMsg("您不是群主!!!");
+        }else{
+            int i = roomServiceImpl.updateRoomName(roomName, roomId);
+            if (i > 0){
+                obj = ReturnObj.success();
+            }else{
+                obj = ReturnObj.fail();
+            }
+        }
+        return obj;
+    }
     //发送文件
 }
