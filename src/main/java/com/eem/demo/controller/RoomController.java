@@ -80,8 +80,18 @@ public class RoomController {
     }
 
     @RequestMapping("/deleteRoomMember")
-    public ReturnObj deleteRoomMember(String username, String roomId){
+    public ReturnObj deleteRoomMember(String username, String roomId, HttpServletRequest request){
         ReturnObj obj = null;
+        //获取请求人的username
+        String token = request.getHeader("token");
+        String username1 = JwtUtil.getUsername(token);
+        //判断是否是管理员
+        if (!roomServiceImpl.isMaster(username,roomId)){
+            obj = ReturnObj.fail();
+            obj.setMsg("您不是管理员!!!");
+            return obj;
+        }
+        //如果是管理员就进行删除操作
         int i = roomServiceImpl.deleteMember(username, roomId);
         if(i > 0){
             obj = ReturnObj.success();
@@ -114,7 +124,31 @@ public class RoomController {
         return obj;
     }
 
-    //更改房间群主
+    /**
+     * 更改群主
+     * @param request
+     * @param masterName
+     * @param roomId
+     * @return
+     */
+    @RequestMapping("/updateRoomMaster")
+    public ReturnObj updateRoomMaster(HttpServletRequest request, String masterName, String roomId){
+        ReturnObj obj;
+        String token = request.getHeader("token");
+        String username = JwtUtil.getUsername(token);
+        if(!roomServiceImpl.isMaster(username, roomId)){
+            obj = ReturnObj.fail();
+            obj.setMsg("您不是群主!!!");
+        }else{
+            int i = roomServiceImpl.updateRoomMaster(masterName, roomId);
+            if (i > 0){
+                obj = ReturnObj.success();
+            }else{
+                obj = ReturnObj.fail();
+            }
+        }
+        return obj;
+    }
+    //更改群名字
     //发送文件
-    //移除某人
 }

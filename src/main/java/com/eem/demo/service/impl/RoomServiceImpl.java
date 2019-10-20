@@ -86,4 +86,27 @@ public class RoomServiceImpl implements RoomService {
         int i = roomMemberRepository.deleteByMemberIdAndRoomId(user.getId(), Integer.valueOf(roomId));
         return i;
     }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public int updateRoomName(String roomName, String roomId) {
+        return roomRepository.updateRoomName(roomName,roomId);
+    }
+
+    @Override
+    public int updateRoomMaster(String masterName, String roomId) {
+        User user = userRepository.findByUsername(masterName);
+        int i =roomRepository.updateRoomMaster(String.valueOf(user.getId()), user.getUsername(), roomId);
+        return i;
+    }
+
+    @Override
+    public boolean isMaster(String username, String roomId) {
+        Room room = roomRepository.findByMasterAndId(username, Integer.valueOf(roomId));
+        if (room != null){
+            return true;
+        }else{
+            return false;
+        }
+    }
 }

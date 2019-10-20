@@ -53,4 +53,28 @@ public interface RoomService {
      * @return
      */
     int deleteMember(String username, String roomId);
+
+    /**
+     * 更改群名
+     * @param roomName
+     * @param roomId
+     * @return
+     */
+    int updateRoomName(String roomName, String roomId);
+
+    /**
+     * 修改群管理员
+     * @param masterName
+     * @param roomId
+     * @return
+     */
+    int updateRoomMaster(String masterName, String roomId);
+
+    /**
+     * 查询是否是群管理员
+     * @param username
+     * @param roomId
+     * @return
+     */
+    boolean isMaster(String username, String roomId);
 }

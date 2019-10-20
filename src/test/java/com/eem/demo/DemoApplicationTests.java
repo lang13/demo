@@ -18,6 +18,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -167,6 +168,6 @@ public class DemoApplicationTests {
     RoomService roomServiceImpl;
     @Test
     public void test_11(){
-        roomServiceImpl.deleteMember("GDUT","1");
+        System.out.println(roomServiceImpl.isMaster("张三", "2"));
     }
 }

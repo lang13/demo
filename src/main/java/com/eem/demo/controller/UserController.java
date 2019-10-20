@@ -422,7 +422,7 @@ public class UserController {
     }
 
     @RequestMapping("/sendFile")
-    public void receiveField(@RequestParam("file") MultipartFile file, String toName, HttpServletRequest request){
+    public void sendFile(@RequestParam("file") MultipartFile file, String toName, HttpServletRequest request){
         String token = request.getHeader("token");
         String username = JwtUtil.getUsername(token);
         String originalFilename = file.getOriginalFilename();
