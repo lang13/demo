@@ -16,13 +16,7 @@ public class Temp {
     private String sender;
 
     @Column
-    private int senderId;
-
-    @Column
     private String receive;
-
-    @Column
-    private int receiveId;
 
     @Column
     private String filePath;
@@ -47,28 +41,12 @@ public class Temp {
         this.sender = sender;
     }
 
-    public int getSenderId() {
-        return senderId;
-    }
-
-    public void setSenderId(int senderId) {
-        this.senderId = senderId;
-    }
-
     public String getReceive() {
         return receive;
     }
 
     public void setReceive(String receive) {
         this.receive = receive;
-    }
-
-    public int getReceiveId() {
-        return receiveId;
-    }
-
-    public void setReceiveId(int receiveId) {
-        this.receiveId = receiveId;
     }
 
     public String getFilePath() {

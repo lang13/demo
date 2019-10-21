@@ -421,6 +421,12 @@ public class UserController {
         }
     }
 
+    /**
+     * 向前端发送文件
+     * @param file
+     * @param toName
+     * @param request
+     */
     @RequestMapping("/sendFile")
     public void sendFile(@RequestParam("file") MultipartFile file, String toName, HttpServletRequest request){
         String token = request.getHeader("token");

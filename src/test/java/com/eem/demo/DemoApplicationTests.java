@@ -1,6 +1,7 @@
 package com.eem.demo;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.eem.demo.entity.RoomMember;
 import com.eem.demo.entity.State;
 import com.eem.demo.entity.User;
@@ -13,6 +14,10 @@ import com.eem.demo.service.UserService;
 import com.eem.demo.util.JwtUtil;
 import com.eem.demo.util.Md5Util;
 import com.google.gson.Gson;
+import org.dom4j.Document;
+import org.dom4j.DocumentException;
+import org.dom4j.DocumentHelper;
+import org.dom4j.tree.DefaultDocument;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -108,20 +113,20 @@ public class DemoApplicationTests {
         if (!file.exists()){
             file.getParentFile().mkdirs();
         }
-        List<Message> messages = new ArrayList<>();
         try(
                 FileWriter fileWriter = new FileWriter(file,true);
                 ){
-            for (int i = 10; i < 20; i++) {
+            for (int i = 0; i < 10; i++) {
                 Message message = new Message();
                 message.setFrom(String.valueOf(i));
                 message.setTo(String.valueOf(i+1));
                 message.setMsg("这是信息内容: " + i);
-                messages.add(message);
+                //转化为json字符窜
+                String string = JSON.toJSONString(message);
+                string = string + ",";
+                //存入文件
+                fileWriter.write(string);
             }
-            Gson gson = new Gson();
-            String json = gson.toJson(messages);
-            fileWriter.write(json);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -138,10 +143,7 @@ public class DemoApplicationTests {
             char[] chars = new char[(int)file.length()];
             fileReader.read(chars);
             String msg = new String(chars);
-            System.out.println(msg);
 
-            List<Message> messages = JSON.parseArray(msg, Message.class);
-            System.out.println(messages);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -169,5 +171,10 @@ public class DemoApplicationTests {
     @Test
     public void test_11(){
         System.out.println(roomServiceImpl.isMaster("张三", "2"));
+    }
+
+    @Test
+    public void test_12(){
+
     }
 }

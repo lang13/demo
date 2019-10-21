@@ -3,20 +3,31 @@ package com.eem.demo.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.eem.demo.entity.Room;
 import com.eem.demo.entity.RoomMember;
+import com.eem.demo.entity.Temp;
 import com.eem.demo.entity.User;
 import com.eem.demo.pojo.ReturnObj;
 import com.eem.demo.service.RoomService;
+import com.eem.demo.service.TempService;
 import com.eem.demo.service.UserService;
 import com.eem.demo.util.JwtUtil;
 import com.eem.demo.websocket.RoomWebSocket;
 import com.eem.demo.websocket.UserWebSocket;
+import org.apache.log4j.Logger;
+import org.aspectj.util.FileUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * @author Administrator
@@ -28,6 +39,11 @@ public class RoomController {
 
     @Autowired
     UserService userServiceImpl;
+
+    @Autowired
+    TempService tempServiceImpl;
+
+    private Logger logger = Logger.getLogger(this.getClass());
 
     /**
      * 根据管理员名字和群名创建群聊
@@ -175,5 +191,65 @@ public class RoomController {
         }
         return obj;
     }
-    //发送文件
+
+    /**
+     * 发送文件
+     * @param file
+     * @param roomId
+     * @param request
+     * @return
+     */
+    @RequestMapping("/sendRoomFile")
+    public void sendRoomFile(@RequestParam("file") MultipartFile file, String roomId,
+                                  HttpServletRequest request){
+        String token = request.getHeader("token");
+        String username = JwtUtil.getUsername(token);
+        //获取文件名
+        String filename = file.getOriginalFilename();
+        String suffix = filename.substring(filename.lastIndexOf("."));
+        String string = UUID.randomUUID().toString();
+        //新建文件类
+        File dest = new File("C:/emm/test/" + string + suffix);
+
+        //将文件写入硬盘
+        try {
+            file.transferTo(dest);
+            //新建temp类
+            Temp temp = new Temp();
+            temp.setSender(username);
+            temp.setReceive(roomId);
+            temp.setFilePath(dest.toString());
+            //存入数据库
+            Temp temp1 = tempServiceImpl.saveFile(temp);
+            //WebSocket发送信息
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("type","file");
+            jsonObject.put("value","/receiveRoomFile/" + temp1.getId());
+            jsonObject.put("from",username);
+            jsonObject.put("to",roomId);
+            logger.info("发送的jsonObject: " + jsonObject);
+            RoomWebSocket.sendMsg(username, roomId, jsonObject);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @RequestMapping("/receiveRoomFile/{fileId}")
+    public void receiveRoomFile(@PathVariable("fileId") String fileId, HttpServletResponse response){
+        logger.info("接收到的fileId: " + fileId);
+        String filePath = tempServiceImpl.findFilePath(fileId);
+        //新建文件类
+        File file = new File(filePath);
+        if (file.exists()){
+            try {
+                byte[] bytes = FileUtil.readAsByteArray(file);
+                ServletOutputStream stream = response.getOutputStream();
+                stream.write(bytes);
+                stream.flush();
+                stream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }
