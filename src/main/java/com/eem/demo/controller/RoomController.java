@@ -224,7 +224,7 @@ public class RoomController {
             //WebSocket发送信息
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("type","file");
-            jsonObject.put("value","/receiveRoomFile/" + temp1.getId());
+            jsonObject.put("msg","/receiveRoomFile/" + temp1.getId());
             jsonObject.put("from",username);
             jsonObject.put("to",roomId);
             logger.info("发送的jsonObject: " + jsonObject);

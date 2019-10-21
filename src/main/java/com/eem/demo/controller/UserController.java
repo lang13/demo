@@ -451,7 +451,7 @@ public class UserController {
             //WebSocket发送信息
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("type","file");
-            jsonObject.put("value","/receiveFile/" + temp.getId());
+            jsonObject.put("msg","/receiveFile/" + temp.getId());
             jsonObject.put("from",username);
             jsonObject.put("to",toName);
             logger.info("发送的json: " + jsonObject);
