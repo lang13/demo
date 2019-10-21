@@ -109,4 +109,9 @@ public class RoomServiceImpl implements RoomService {
             return false;
         }
     }
+
+    @Override
+    public List<Integer> findRoomId(String memberId) {
+        return roomMemberRepository.findRoomId(memberId);
+    }
 }

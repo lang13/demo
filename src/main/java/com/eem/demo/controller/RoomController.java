@@ -252,4 +252,22 @@ public class RoomController {
             }
         }
     }
+
+    @RequestMapping("/findRoomId")
+    public ReturnObj findRoomId(HttpServletRequest request){
+        ReturnObj obj;
+        String token = request.getHeader("token");
+        String userId = JwtUtil.getUserId(token);
+        logger.info("userId: " + userId);
+        List<Integer> roomId = roomServiceImpl.findRoomId(userId);
+        if (roomId.isEmpty()){
+            obj = ReturnObj.fail();
+            obj.setMsg("用户没加入任何群聊!!!");
+        }else{
+            obj = ReturnObj.success();
+            logger.info("roomId: " + roomId);
+            obj.add("roomId", roomId);
+        }
+        return  obj;
+    }
 }

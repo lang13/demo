@@ -175,6 +175,7 @@ public class DemoApplicationTests {
 
     @Test
     public void test_12(){
-
+        List<Integer> roomId = roomMemberRepository.findRoomId("1");
+        System.out.println(roomId);
     }
 }

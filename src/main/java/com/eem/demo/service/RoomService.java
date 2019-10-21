@@ -77,4 +77,11 @@ public interface RoomService {
      * @return
      */
     boolean isMaster(String username, String roomId);
+
+    /**
+     * 根据用户id查询用户已加入的群聊
+     * @param memberId
+     * @return
+     */
+    List<Integer> findRoomId(String memberId);
 }
