@@ -115,20 +115,20 @@ public class DemoApplicationTests {
         }
         try(
                 FileWriter fileWriter = new FileWriter(file,true);
+                BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
                 ){
-            for (int i = 0; i < 10; i++) {
+            for (int i = 20; i < 100; i++) {
                 Message message = new Message();
                 message.setFrom(String.valueOf(i));
                 message.setTo(String.valueOf(i+1));
                 message.setMsg("这是信息内容: " + i);
                 //转化为json字符窜
-                String string = JSON.toJSONString(message);
-                string = string + ",";
+                String string = ",";
+                string = string + JSON.toJSONString(message);
                 //存入文件
-                fileWriter.write(string);
+                bufferedWriter.write(string);
+                bufferedWriter.newLine();
             }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -143,7 +143,12 @@ public class DemoApplicationTests {
             char[] chars = new char[(int)file.length()];
             fileReader.read(chars);
             String msg = new String(chars);
-
+            msg = msg.replaceFirst(",","[");
+            msg = msg + "]";
+            //转化为json数组
+            JSONArray objects = JSON.parseArray(msg);
+            System.out.println(msg);
+            System.out.println("object: " + objects);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
