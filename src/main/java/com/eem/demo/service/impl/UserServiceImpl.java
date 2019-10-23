@@ -81,8 +81,12 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<User> findFriend(String userId) {
         List<Integer> fiendId = friendRepository.findFriendIdByUserId(userId);
-
-        return userRepository.findAll(fiendId);
+        List<User> users = userRepository.findAll(fiendId);
+        //将密码设为空
+        for (int i = 0; i < users.size(); i++) {
+            users.get(i).setPassword("");
+        }
+        return users;
     }
 
     @Override
