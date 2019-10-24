@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import javax.websocket.*;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
+import java.io.*;
 import java.util.Date;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -26,7 +27,7 @@ public class RoomWebSocket {
     static{
         rooms = new ConcurrentHashMap<>();
     }
-    private Logger logger = Logger.getLogger(RoomWebSocket.class);
+    private static Logger logger = Logger.getLogger(RoomWebSocket.class);
     private Session session;
     private String username;
     private String roomId;
@@ -86,6 +87,14 @@ public class RoomWebSocket {
      * @param object
      */
     public static void sendMsg(String username, String roomId, JSONObject object){
+        //新建线程保存聊天记录
+        Thread thread = new Thread(){
+            @Override
+            public void run() {
+                saveRecord(object, roomId);
+            }
+        };
+        thread.start();
         //获取要发送信息的房间里的用户
         ConcurrentHashMap<String, Session> users = rooms.get(roomId);
         //获取发送者的session
@@ -108,6 +117,26 @@ public class RoomWebSocket {
         ConcurrentHashMap<String, Session> users = rooms.get(roomId);
         if (users.containsKey(username)){
             users.remove(username);
+        }
+    }
+
+    /**
+     * 保存聊天记录
+     * @param object
+     * @param RoomId
+     */
+    private static void saveRecord(JSONObject object, String RoomId){
+        File file = new File("C:/emm/record/room/"+RoomId+".txt");
+        try(
+                FileWriter fileWriter = new FileWriter(file,true);
+                BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+                ) {
+            //保存记录
+            bufferedWriter.write(","+object.toJSONString());
+            bufferedWriter.newLine();
+            logger.info("保存聊天记录");
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }

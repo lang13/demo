@@ -117,7 +117,7 @@ public class DemoApplicationTests {
                 FileWriter fileWriter = new FileWriter(file,true);
                 BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
                 ){
-            for (int i = 20; i < 100; i++) {
+            for (int i = 0; i < 10; i++) {
                 Message message = new Message();
                 message.setFrom(String.valueOf(i));
                 message.setTo(String.valueOf(i+1));
@@ -180,7 +180,15 @@ public class DemoApplicationTests {
 
     @Test
     public void test_12(){
-        List<Integer> roomId = roomMemberRepository.findRoomId("1");
-        System.out.println(roomId);
+        File file = new File("C:/emm/record/room/1.txt");
+        try {
+            FileReader fileReader = new FileReader(file);
+            char[] chars = new char[(int)file.length()];
+            fileReader.read(chars);
+            String msg = new String(chars);
+            System.out.println(msg);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
