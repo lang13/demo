@@ -134,7 +134,6 @@ public class RoomWebSocket {
             //保存记录
             bufferedWriter.write(","+object.toJSONString());
             bufferedWriter.newLine();
-            logger.info("保存聊天记录");
         } catch (IOException e) {
             e.printStackTrace();
         }

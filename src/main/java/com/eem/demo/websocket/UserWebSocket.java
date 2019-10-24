@@ -10,6 +10,9 @@ import org.springframework.stereotype.Component;
 import javax.websocket.*;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -126,6 +129,33 @@ public class UserWebSocket {
                 temp.put(toName,jsonObjects);
                 logger.info("temp里面的内容: " + temp);
             }
+        }
+    }
+
+    /**
+     * 保存聊天记录
+     * @param object
+     * @param toId
+     * @param fromId
+     */
+    private static void saveRecord(JSONObject object, String toId, String fromId){
+        //新建文件类
+        String fileName;
+        if (Integer.parseInt(toId) < Integer.parseInt(fromId)){
+            fileName = toId + "and" + fromId;
+        }else{
+            fileName = fromId + "and" + toId;
+        }
+        File file = new File("c:/emm/record/user/" + fileName + ".txt");
+        try (
+                FileWriter fileWriter = new FileWriter(file, true);
+                BufferedWriter bufferedWriter = new BufferedWriter(fileWriter)
+                ){
+            //保存记录
+            bufferedWriter.write(","+object.toJSONString());
+            bufferedWriter.newLine();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }
