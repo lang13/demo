@@ -1,6 +1,7 @@
 package com.eem.demo.repository;
 
 import com.eem.demo.entity.Friend;
+import com.eem.demo.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -32,6 +33,17 @@ public interface FriendRepository extends JpaRepository<Friend, Integer> {
                    "UNION ALL\n" +
                    "SELECT user_id AS friendId FROM friend WHERE friend_id = ?1",nativeQuery = true)
     public List<Integer> findFriendIdByUserId(String userId);
+
+    /**
+     * 根据好友id集合查询好友集合
+     * @param fiendsId
+     * @return
+     */
+    @Query(value = "SELECT u.`id`,u.`username`,u.`photo`,s.`state` \n" +
+            "FROM state s RIGHT JOIN USER u \n" +
+            "ON u.id = s.id \n" +
+            "WHERE u.id IN ?1", nativeQuery = true)
+    public List<Object> findFriend(List<Integer> fiendsId);
 
     /**
      * 根据用户id和好友id删除好友关系

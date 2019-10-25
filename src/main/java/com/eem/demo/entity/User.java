@@ -27,6 +27,17 @@ public class User {
     @Column
     private String photo;
 
+    @Transient
+    private String state;
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
     public Integer getId() {
         return id;
     }
@@ -66,6 +77,7 @@ public class User {
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
                 ", photo='" + photo + '\'' +
+                ", state='" + state + '\'' +
                 '}';
     }
 }

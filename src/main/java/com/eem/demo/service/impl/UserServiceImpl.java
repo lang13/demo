@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -81,12 +82,34 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<User> findFriend(String userId) {
         List<Integer> fiendId = friendRepository.findFriendIdByUserId(userId);
+        List<Object> objects = friendRepository.findFriend(fiendId);
+        List<User> users = new ArrayList<>();
+        //将object类转化为User类
+        for (Object object: objects) {
+            Object[] rowArray = (Object[])object;
+
+            User user = new User();
+            Integer id = (Integer) rowArray[0];
+            String username = (String) rowArray[1];
+            String photo = (String) rowArray[2];
+            String state = (String) rowArray[3];
+
+            user.setId(id);
+            user.setUsername(username);
+            user.setPhoto(photo);
+            user.setState(state);
+
+            users.add(user);
+        }
+        return users;
+        /*
         List<User> users = userRepository.findAll(fiendId);
         //将密码设为空
         for (int i = 0; i < users.size(); i++) {
             users.get(i).setPassword("");
         }
         return users;
+        */
     }
 
     @Override
