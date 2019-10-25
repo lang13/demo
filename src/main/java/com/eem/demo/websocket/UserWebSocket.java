@@ -2,7 +2,9 @@ package com.eem.demo.websocket;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.eem.demo.entity.User;
 import com.eem.demo.service.StateService;
+import com.eem.demo.service.UserService;
 import com.eem.demo.util.SpringUtil;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
@@ -27,12 +29,14 @@ import java.util.concurrent.ConcurrentHashMap;
 @ServerEndpoint("/websocket/user/{username}")
 public class UserWebSocket {
     /**获取stateServiceImpl*/
-    private StateService stateServiceImpl = (StateService)SpringUtil.getBean("stateServiceImpl");
+    private static StateService stateServiceImpl = (StateService)SpringUtil.getBean("stateServiceImpl");
+    private static UserService userServiceImpl = (UserService) SpringUtil.getBean("userServiceImpl");
     /**
      * 用于储存用户session
      * 验证用户是否在线
      * 以及用户发送信息
      */
+
     private static Map<String, Session> users;
     static{
         users  = new ConcurrentHashMap<>();
@@ -49,9 +53,23 @@ public class UserWebSocket {
     /**日志功能*/
     private static Logger logger = Logger.getLogger(UserWebSocket.class);
 
+    private List<String> friends;
+
+    private String username;
+
+    private String id;
+
     @OnOpen
     public void onOpen(Session session, @PathParam("username")String username){
-        logger.info(username + "成功登陆!!!");
+        //获取好友列表
+        friends = findFriends(username);
+        this.username = username;
+        this.id = String.valueOf(userServiceImpl.findByUsername(username).getId());
+
+        logger.info(username + "的好友列表: " + friends);
+        //给好友发送在线信息
+        sendState(this.friends, "在线", this.username, this.id);
+
         //放入session
         users.put(username,session);
         //设置用户状态为在线
@@ -81,6 +99,9 @@ public class UserWebSocket {
         users.remove(username);
         logger.info(users);
 
+        //给好友发送在线信息
+        sendState(this.friends, "离线", this.username, this.id);
+
         //设置用户状态为离线
         stateServiceImpl.updateState("离线", username);
     }
@@ -96,7 +117,7 @@ public class UserWebSocket {
         JSONObject jsonObject = JSON.parseObject(msg);
         logger.info("转化为json格式后的msg: " + jsonObject);
         //发送信息
-        sendMsg(jsonObject.getString("to"), jsonObject);
+        sendMsg(jsonObject.getString("toName"), jsonObject);
     }
 
     @OnError
@@ -156,6 +177,47 @@ public class UserWebSocket {
             bufferedWriter.newLine();
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    /**
+     * 根据用户名查抄用户的好友的username
+     * @param username
+     * @return
+     */
+    private static List<String> findFriends(String username){
+        List<String> friends = new ArrayList<>();
+
+        User user = userServiceImpl.findByUsername(username);
+        List<User> friend = userServiceImpl.findFriend(String.valueOf(user.getId()));
+        for (int i = 0; i < friend.size(); i++) {
+            friends.add(friend.get(i).getUsername());
+        }
+        return friends;
+    }
+
+    /**
+     * 向好友发送状态信息
+     * @param friends
+     * @param state
+     */
+    public static void sendState(List<String> friends, String state, String username, String id){
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("type", "stateInform");
+        jsonObject.put("id", id);
+        jsonObject.put("username", username);
+        jsonObject.put("state", state);
+
+        //发送给好友
+        for (int i = 0; i < friends.size(); i++) {
+            Session session = users.get(friends.get(i));
+            if (session != null){
+                try {
+                    session.getBasicRemote().sendText(jsonObject.toJSONString());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 }

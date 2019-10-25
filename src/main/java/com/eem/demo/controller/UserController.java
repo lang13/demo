@@ -27,6 +27,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -478,5 +479,25 @@ public class UserController {
                 e.printStackTrace();
             }
         }
+    }
+
+    /**
+     * 更改用户状态
+     * @param state
+     * @param request
+     */
+    public void updateState(String state, HttpServletRequest request){
+        String token = request.getHeader("token");
+        String username = JwtUtil.getUsername(token);
+        String userId = JwtUtil.getUserId(token);
+        //获取好友列表
+        List<User> users = userServiceImpl.findFriend(username);
+        //好友名字集合
+        List<String> friends = new ArrayList<>();
+        for (int i = 0; i < users.size(); i++) {
+            friends.add(users.get(i).getUsername());
+        }
+        //发送状态信息
+        UserWebSocket.sendState(friends, state, username, userId);
     }
 }
