@@ -267,6 +267,8 @@ public class UserController {
      */
     @RequestMapping("/updateUser")
     public ReturnObj updateUser(User user, HttpServletRequest request){
+        logger.info("传入的修改后的用户信息: " + user);
+
         ReturnObj obj;
         String token = request.getHeader("token");
         String userId = JwtUtil.getUserId(token);
