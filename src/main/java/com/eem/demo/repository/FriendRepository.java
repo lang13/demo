@@ -36,14 +36,18 @@ public interface FriendRepository extends JpaRepository<Friend, Integer> {
 
     /**
      * 根据好友id集合查询好友集合
-     * @param fiendsId
+     * @param userId
      * @return
      */
-    @Query(value = "SELECT u.`id`,u.`username`,u.`photo`,s.`state` \n" +
-            "FROM state s RIGHT JOIN USER u \n" +
-            "ON u.id = s.id \n" +
-            "WHERE u.id IN ?1", nativeQuery = true)
-    public List<Object> findFriend(List<Integer> fiendsId);
+    @Query(value = "SELECT u.`id`,u.`username`,u.`photo`,s.`state`,n.friend_memo FROM state s \n" +
+            "RIGHT JOIN USER u ON u.`id` = s.`id`\n" +
+            "RIGHT JOIN \n" +
+            "(SELECT friend_id,user_memo AS friend_memo FROM friend WHERE user_id = ?1\n" +
+            "UNION ALL\n" +
+            "SELECT user_id,friend_memo FROM friend WHERE friend_id = ?1) AS n\n" +
+            "ON u.`id` = n.friend_id\n" +
+            "WHERE u.`id` IN(n.friend_id)", nativeQuery = true)
+    public List<Object> findFriend(String userId);
 
     /**
      * 根据用户id和好友id删除好友关系

@@ -196,28 +196,27 @@ public class DemoApplicationTests {
 
     @Test
     public void test_13(){
-        List<User> friend = userServiceImpl.findFriend("1");
-        System.out.println(friend);
+        List<Object> objects = friendRepository.findFriend("3");
+        List<User> users = new ArrayList<>();
+        for (Object object: objects) {
+            Object[] rowArray = (Object[])object;
 
-//        List<Object> objects = friendRepository.findFriend(ids);
-//        List<User> users = new ArrayList<>();
-//        for (Object object: objects) {
-//            Object[] rowArray = (Object[])object;
-//
-//            User user = new User();
-//            Integer id = (Integer) rowArray[0];
-//            String username = (String) rowArray[1];
-//            String photo = (String) rowArray[2];
-//            String state = (String) rowArray[3];
-//
-//            user.setId(id);
-//            user.setUsername(username);
-//            user.setPhoto(photo);
-//            user.setState(state);
-//
-//            users.add(user);
-//        }
-//        System.out.println(users);
+            User user = new User();
+            Integer id = (Integer) rowArray[0];
+            String username = (String) rowArray[1];
+            String photo = (String) rowArray[2];
+            String state = (String) rowArray[3];
+            String memoName = (String)rowArray[4];
+
+            user.setId(id);
+            user.setUsername(username);
+            user.setPhoto(photo);
+            user.setState(state);
+            user.setMemoName(memoName);
+
+            users.add(user);
+        }
+        System.out.println(users);
     }
 
     @Test

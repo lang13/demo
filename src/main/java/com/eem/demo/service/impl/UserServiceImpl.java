@@ -81,8 +81,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<User> findFriend(String userId) {
-        List<Integer> fiendId = friendRepository.findFriendIdByUserId(userId);
-        List<Object> objects = friendRepository.findFriend(fiendId);
+        List<Object> objects = friendRepository.findFriend(userId);
         List<User> users = new ArrayList<>();
         //将object类转化为User类
         for (Object object: objects) {
@@ -93,11 +92,13 @@ public class UserServiceImpl implements UserService {
             String username = (String) rowArray[1];
             String photo = (String) rowArray[2];
             String state = (String) rowArray[3];
+            String memoName = (String)rowArray[4];
 
             user.setId(id);
             user.setUsername(username);
             user.setPhoto(photo);
             user.setState(state);
+            user.setMemoName(memoName);
 
             users.add(user);
         }

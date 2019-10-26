@@ -21,6 +21,12 @@ public class Friend {
     @Column
     private Integer friendId;
 
+    @Column
+    private String userMemo;
+
+    @Column
+    private String friendMemo;
+
     /**
      * 不在数据库中创建这个列
      */
@@ -59,12 +65,30 @@ public class Friend {
         this.friendId = friendId;
     }
 
+    public String getUserMemo() {
+        return userMemo;
+    }
+
+    public void setUserMemo(String userMemo) {
+        this.userMemo = userMemo;
+    }
+
+    public String getFriendMemo() {
+        return friendMemo;
+    }
+
+    public void setFriendMemo(String friendMemo) {
+        this.friendMemo = friendMemo;
+    }
+
     @Override
     public String toString() {
         return "Friend{" +
                 "id=" + id +
                 ", userId=" + userId +
                 ", friendId=" + friendId +
+                ", userMemo='" + userMemo + '\'' +
+                ", friendMemo='" + friendMemo + '\'' +
                 ", myFriend=" + myFriend +
                 '}';
     }

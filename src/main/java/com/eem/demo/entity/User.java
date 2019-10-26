@@ -39,6 +39,9 @@ public class User {
     @Transient
     private String state;
 
+    @Transient
+    private String memoName;
+
     public String getState() {
         return state;
     }
@@ -103,6 +106,14 @@ public class User {
         this.signature = signature;
     }
 
+    public String getMemoName() {
+        return memoName;
+    }
+
+    public void setMemoName(String memoName) {
+        this.memoName = memoName;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -111,9 +122,10 @@ public class User {
                 ", password='" + password + '\'' +
                 ", photo='" + photo + '\'' +
                 ", gender='" + gender + '\'' +
-                ", home='" + address + '\'' +
+                ", address='" + address + '\'' +
                 ", signature='" + signature + '\'' +
                 ", state='" + state + '\'' +
+                ", memoName='" + memoName + '\'' +
                 '}';
     }
 }
