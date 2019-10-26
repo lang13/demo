@@ -87,11 +87,11 @@ public class User {
         this.gender = gender;
     }
 
-    public String getHome() {
+    public String getAddress() {
         return address;
     }
 
-    public void setHome(String address) {
+    public void setAddress(String address) {
         this.address = address;
     }
 

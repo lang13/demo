@@ -74,4 +74,13 @@ public interface UserService {
      * @return
      */
     int updatePassword(String password, String userId);
+
+    /**
+     * 修改用户信息
+     * 除密码
+     * @param user
+     * @param userId
+     * @return
+     */
+    User updateUser(User user, String userId);
 }

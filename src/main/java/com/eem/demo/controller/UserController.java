@@ -194,7 +194,7 @@ public class UserController {
      * @return
      */
     @RequestMapping("/updateUsername")
-    public ReturnObj updateNickname(String username, HttpServletRequest request){
+    public ReturnObj updateUsername(String username, HttpServletRequest request){
         //获取用户token
         String token = request.getHeader("token");
         //获取token中的用户id
@@ -255,6 +255,28 @@ public class UserController {
         }else{
             obj = ReturnObj.fail();
             obj.setMsg("密码错误!!!");
+        }
+        return obj;
+    }
+
+    /**
+     * 修改用户的基础信息
+     * @param user
+     * @param request
+     * @return
+     */
+    @RequestMapping("/updateUser")
+    public ReturnObj updateUser(User user, HttpServletRequest request){
+        ReturnObj obj;
+        String token = request.getHeader("token");
+        String userId = JwtUtil.getUserId(token);
+        User one = userServiceImpl.updateUser(user, userId);
+        if (one != null){
+            obj = ReturnObj.success();
+            obj.setMsg("修改用户信息成功!!!");
+            obj.add("user",one);
+        }else{
+            obj = ReturnObj.fail();
         }
         return obj;
     }

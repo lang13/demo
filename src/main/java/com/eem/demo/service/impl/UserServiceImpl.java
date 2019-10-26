@@ -118,4 +118,20 @@ public class UserServiceImpl implements UserService {
         password = Md5Util.getMd5(password);
         return userRepository.updatePassword(password, userId);
     }
+
+    @Override
+    public User updateUser(User user, String userId) {
+        User one = userRepository.findOne(Integer.valueOf(userId));
+        //判断传入的用户信息
+        if (user.getSignature() != null){
+            one.setSignature(user.getSignature());
+        }
+        if(user.getAddress() != null){
+            one.setAddress(user.getAddress());
+        }
+        if (user.getGender() != null){
+            one.setGender(user.getGender());
+        }
+        return userRepository.save(one);
+    }
 }
