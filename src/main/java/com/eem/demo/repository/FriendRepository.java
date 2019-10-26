@@ -58,4 +58,27 @@ public interface FriendRepository extends JpaRepository<Friend, Integer> {
      */
     public int deleteByUserIdAndFriendId(int userId, int friendId);
 
+    /**
+     * 根据用户id查询用户基础信息
+     * 不包括标注名
+     * @param friendId
+     * @return
+     */
+    @Query(value =
+            "SELECT u.`id`,u.`username`,u.`photo`,s.`state` FROM state s\n" +
+            "RIGHT JOIN USER u ON u.`id` = s.`id`\n" +
+            "WHERE u.`id` = ?1", nativeQuery = true)
+    public List<Object> findFriend(String friendId);
+
+    /**
+     * 查询用户好友的备注名
+     * @param friendId
+     * @param userId
+     * @return
+     */
+    @Query(value =
+            "SELECT friend_memo FROM friend WHERE user_id = ?1 AND friend_id = ?2\n" +
+            "UNION ALL\n" +
+            "SELECT user_memo AS friend_memo FROM friend WHERE friend_id = ?1 AND user_id = ?2", nativeQuery = true)
+    public String findMemo(String friendId, String userId);
 }

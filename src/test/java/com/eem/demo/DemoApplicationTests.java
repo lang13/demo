@@ -87,8 +87,7 @@ public class DemoApplicationTests {
 
     @Test
     public void test_04(){
-        List<User> friend = userServiceImpl.findFriend("3");
-        System.out.println(friend);
+
     }
 
     @Test
@@ -206,7 +205,7 @@ public class DemoApplicationTests {
             String username = (String) rowArray[1];
             String photo = (String) rowArray[2];
             String state = (String) rowArray[3];
-            String memoName = (String)rowArray[4];
+            String memoName = friendRepository.findMemo("3","4");
 
             user.setId(id);
             user.setUsername(username);

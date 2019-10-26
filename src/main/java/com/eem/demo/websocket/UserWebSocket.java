@@ -3,6 +3,7 @@ package com.eem.demo.websocket;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.eem.demo.entity.User;
+import com.eem.demo.service.FriendService;
 import com.eem.demo.service.StateService;
 import com.eem.demo.service.UserService;
 import com.eem.demo.util.SpringUtil;
@@ -31,6 +32,7 @@ public class UserWebSocket {
     /**获取stateServiceImpl*/
     private static StateService stateServiceImpl = (StateService)SpringUtil.getBean("stateServiceImpl");
     private static UserService userServiceImpl = (UserService) SpringUtil.getBean("userServiceImpl");
+    private static FriendService friendServiceImpl = (FriendService) SpringUtil.getBean("friendServiceImpl");
     /**
      * 用于储存用户session
      * 验证用户是否在线
@@ -189,7 +191,7 @@ public class UserWebSocket {
         List<String> friends = new ArrayList<>();
 
         User user = userServiceImpl.findByUsername(username);
-        List<User> friend = userServiceImpl.findFriend(String.valueOf(user.getId()));
+        List<User> friend = friendServiceImpl.findFriends(String.valueOf(user.getId()));
         for (int i = 0; i < friend.size(); i++) {
             friends.add(friend.get(i).getUsername());
         }
