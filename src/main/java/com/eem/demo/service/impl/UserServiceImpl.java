@@ -80,40 +80,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> findFriend(String userId) {
-        List<Object> objects = friendRepository.findFriend(userId);
-        List<User> users = new ArrayList<>();
-        //将object类转化为User类
-        for (Object object: objects) {
-            Object[] rowArray = (Object[])object;
-
-            User user = new User();
-            Integer id = (Integer) rowArray[0];
-            String username = (String) rowArray[1];
-            String photo = (String) rowArray[2];
-            String state = (String) rowArray[3];
-            String memoName = (String)rowArray[4];
-
-            user.setId(id);
-            user.setUsername(username);
-            user.setPhoto(photo);
-            user.setState(state);
-            user.setMemoName(memoName);
-
-            users.add(user);
-        }
-        return users;
-        /*
-        List<User> users = userRepository.findAll(fiendId);
-        //将密码设为空
-        for (int i = 0; i < users.size(); i++) {
-            users.get(i).setPassword("");
-        }
-        return users;
-        */
-    }
-
-    @Override
     @Transactional(rollbackFor = Exception.class)
     public int updatePassword(String password, String userId) {
         password = Md5Util.getMd5(password);

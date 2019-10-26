@@ -1,6 +1,7 @@
 package com.eem.demo.service.impl;
 
 import com.eem.demo.entity.Friend;
+import com.eem.demo.entity.User;
 import com.eem.demo.repository.FriendRepository;
 import com.eem.demo.repository.UserRepository;
 import com.eem.demo.service.FriendService;
@@ -8,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -78,5 +80,31 @@ public class FriendServiceImpl implements FriendService {
                 return 0;
             }
         }
+    }
+
+    @Override
+    public List<User> findFriends(String userId) {
+        List<Object> objects = friendRepository.findFriends(userId);
+        List<User> users = new ArrayList<>();
+        //将object类转化为User类
+        for (Object object: objects) {
+            Object[] rowArray = (Object[])object;
+
+            User user = new User();
+            Integer id = (Integer) rowArray[0];
+            String username = (String) rowArray[1];
+            String photo = (String) rowArray[2];
+            String state = (String) rowArray[3];
+            String memoName = (String)rowArray[4];
+
+            user.setId(id);
+            user.setUsername(username);
+            user.setPhoto(photo);
+            user.setState(state);
+            user.setMemoName(memoName);
+
+            users.add(user);
+        }
+        return users;
     }
 }

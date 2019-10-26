@@ -1,5 +1,7 @@
 package com.eem.demo.service;
 
+import com.eem.demo.entity.User;
+
 import java.util.List;
 
 /**
@@ -29,4 +31,10 @@ public interface FriendService {
      */
     int deleteFriend(String userId, String friendName);
 
+    /**
+     * 根据用户id查找用户的好友集
+     * @param userId
+     * @return
+     */
+    List<User> findFriends(String userId);
 }

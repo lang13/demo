@@ -61,13 +61,6 @@ public interface UserService {
     void deleteFile(String filePath);
 
     /**
-     * 根据用户id查找用户的好友集
-     * @param userId
-     * @return
-     */
-    List<User> findFriend(String userId);
-
-    /**
      * 根据账户id修改用户密码
      * @param password
      * @param userId

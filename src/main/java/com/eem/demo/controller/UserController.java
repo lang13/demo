@@ -369,7 +369,7 @@ public class UserController {
             }else{
                 obj = ReturnObj.success();
                 obj.setMsg("新增好友成功!!!");
-                List<User> users = userServiceImpl.findFriend(userId);
+                List<User> users = friendServiceImpl.findFriends(userId);
                 obj.add("friends",users);
 
                 return obj;
@@ -389,7 +389,7 @@ public class UserController {
         String userId = JwtUtil.getUserId(token);
         ReturnObj obj;
         //查找好友集
-        List<User> friends = userServiceImpl.findFriend(userId);
+        List<User> friends = friendServiceImpl.findFriends(userId);
         if(friends != null){
             obj = ReturnObj.success();
             obj.setMsg("查找好友成功!!!");
@@ -442,7 +442,7 @@ public class UserController {
         if (i > 0){
             obj = ReturnObj.success();
             obj.setMsg("成功删除好友!!!");
-            List<User> users = userServiceImpl.findFriend(userId);
+            List<User> users = friendServiceImpl.findFriends(userId);
             obj.add("friends",users);
 
             return obj;
@@ -522,7 +522,7 @@ public class UserController {
         String username = JwtUtil.getUsername(token);
         String userId = JwtUtil.getUserId(token);
         //获取好友列表
-        List<User> users = userServiceImpl.findFriend(username);
+        List<User> users = friendServiceImpl.findFriends(username);
         //好友名字集合
         List<String> friends = new ArrayList<>();
         for (int i = 0; i < users.size(); i++) {
