@@ -22,9 +22,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.criteria.*;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Date;
@@ -216,5 +218,25 @@ public class DemoApplicationTests {
 //            users.add(user);
 //        }
 //        System.out.println(users);
+    }
+
+    @Test
+    public void test_14(){
+        Specification<User> specification = new Specification<User>() {
+            @Override
+            public Predicate toPredicate(Root<User> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+                Path<Object> username = root.get("username");
+                Path<Object> id = root.get("id");
+
+                Predicate p1 = criteriaBuilder.equal(username, "张三");
+                Predicate p2 = criteriaBuilder.equal(id, "1");
+
+                Predicate predicate = criteriaBuilder.or(p1, p2);
+                return predicate;
+            }
+        };
+
+        List<User> all = userRepository.findAll(specification);
+        System.out.println(all);
     }
 }

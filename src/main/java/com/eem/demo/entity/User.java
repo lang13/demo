@@ -27,6 +27,15 @@ public class User {
     @Column
     private String photo;
 
+    @Column
+    private String gender;
+
+    @Column
+    private String address;
+
+    @Column
+    private String signature;
+
     @Transient
     private String state;
 
@@ -70,6 +79,30 @@ public class User {
         this.photo = photo;
     }
 
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    public String getHome() {
+        return address;
+    }
+
+    public void setHome(String address) {
+        this.address = address;
+    }
+
+    public String getSignature() {
+        return signature;
+    }
+
+    public void setSignature(String signature) {
+        this.signature = signature;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -77,6 +110,9 @@ public class User {
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
                 ", photo='" + photo + '\'' +
+                ", gender='" + gender + '\'' +
+                ", home='" + address + '\'' +
+                ", signature='" + signature + '\'' +
                 ", state='" + state + '\'' +
                 '}';
     }

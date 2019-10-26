@@ -39,15 +39,7 @@ public class StateServiceImpl implements StateService {
     @Override
     public List<State> findFriendState(String userId) {
         List<Integer> friendId = friendServiceImpl.findFriendId(userId);
-        //根据id获取List<User>
-        List<User> all = userRepository.findAll(friendId);
-        //再利用all查询state表中的状态信息
-        List<State> states = new ArrayList<>();
-        for (int i = 0; i < all.size(); i++) {
-            State state = stateRepository.findByUsername(all.get(i).getUsername());
-            //放入集合中
-            states.add(state);
-        }
+        List<State> states = stateRepository.findAll(friendId);
         return states;
     }
 }

@@ -2,6 +2,7 @@ package com.eem.demo.repository;
 
 import com.eem.demo.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
@@ -9,7 +10,7 @@ import org.springframework.data.jpa.repository.Query;
  * jpa
  * @author Administrator
  */
-public interface UserRepository extends JpaRepository<User,Integer> {
+public interface UserRepository extends JpaRepository<User,Integer>, JpaSpecificationExecutor<User> {
     /**
      * 根据用户名和密码查询用户
      * @param username

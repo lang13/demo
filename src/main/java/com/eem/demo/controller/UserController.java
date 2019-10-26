@@ -286,7 +286,7 @@ public class UserController {
      * @param friendName
      */
     @RequestMapping("/requestFriend")
-    public ReturnObj requestFriend(String friendName, HttpServletRequest request){
+    public ReturnObj requestFriend(String friendName, String msg, HttpServletRequest request){
         ReturnObj obj;
 
         String token = request.getHeader("token");
@@ -295,9 +295,9 @@ public class UserController {
         if(userServiceImpl.exists(friendName)){
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("type", "inform");
-            jsonObject.put("value",username + "请求添加好友!!!");
-            jsonObject.put("to", friendName);
-            jsonObject.put("from", username);
+            jsonObject.put("msg",msg);
+            jsonObject.put("toName", friendName);
+            jsonObject.put("fromName", username);
             jsonObject.put("fromId", userId);
             //发送WebSocket
             UserWebSocket.sendMsg(friendName,jsonObject);
@@ -378,6 +378,13 @@ public class UserController {
         return obj;
     }
 
+    /**
+     * 已经淘汰的Mapping
+     * findFriends请求已经包含了好友的状态信息
+     * @param request
+     * @return
+     */
+    @Deprecated
     @RequestMapping("/findFriendState")
     public ReturnObj findFriendState(HttpServletRequest request){
         ReturnObj obj;
