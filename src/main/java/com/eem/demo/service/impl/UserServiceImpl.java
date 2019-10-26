@@ -67,7 +67,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User findByUsername(String username) {
         User user = userRepository.findByUsername(username);
-        user.setPassword("");
+        user.setPassword(null);
         return user;
     }
 
