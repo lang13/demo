@@ -402,6 +402,20 @@ public class UserController {
         return obj;
     }
 
+    @RequestMapping("/findFriend")
+    public ReturnObj findFriend(String friendId, HttpServletRequest request){
+        ReturnObj obj;
+        String token = request.getHeader("token");
+        String userId = JwtUtil.getUserId(token);
+        User user = friendServiceImpl.fiendFriend(friendId, userId);
+        if (user == null){
+            obj = ReturnObj.fail();
+        }else{
+            obj = ReturnObj.success();
+            obj.add("friend",user);
+        }
+        return obj;
+    }
     /**
      * 已经淘汰的Mapping
      * findFriends请求已经包含了好友的状态信息
