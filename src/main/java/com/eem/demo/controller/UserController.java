@@ -15,6 +15,7 @@ import com.eem.demo.util.Md5Util;
 import com.eem.demo.websocket.UserWebSocket;
 import org.apache.log4j.Logger;
 import org.aspectj.util.FileUtil;
+import org.hibernate.loader.custom.Return;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -530,5 +531,26 @@ public class UserController {
         }
         //发送状态信息
         UserWebSocket.sendState(friends, state, username, userId);
+    }
+
+    /**
+     * 修改用户的备注名
+     * @param friendId
+     * @param memoName
+     * @param request
+     * @return
+     */
+    public ReturnObj updateMemo(String friendId, String memoName, HttpServletRequest request){
+        ReturnObj obj;
+        String token = request.getHeader("token");
+        String userId = JwtUtil.getUserId(token);
+        //修改用户昵称
+        int i = friendServiceImpl.updateMemo(friendId, userId, memoName);
+        if (i > 0){
+            obj = ReturnObj.success();
+        }else{
+            obj = ReturnObj.fail();
+        }
+        return obj;
     }
 }

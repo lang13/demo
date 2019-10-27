@@ -143,4 +143,23 @@ public class FriendServiceImpl implements FriendService {
         }
         return user;
     }
+
+    @Override
+    public int updateMemo(String friendId, String userId, String memo) {
+        //friendId < userId
+        Friend friend = friendRepository.isFriend(userId, friendId);
+        if (friend == null){
+            return 0;
+        }else{
+            int f_id = Integer.parseInt(friendId);
+            int u_id = Integer.parseInt(userId);
+            if (f_id < u_id){
+                friend.setUserMemo(memo);
+            }else{
+                friend.setFriendMemo(memo);
+            }
+            friendRepository.save(friend);
+            return 1;
+        }
+    }
 }

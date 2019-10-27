@@ -45,4 +45,13 @@ public interface FriendService {
      * @return
      */
     User fiendFriend(String friendId, String userId);
+
+    /**
+     * 修改好友备注名
+     * @param friendId
+     * @param userId
+     * @param memo
+     * @return
+     */
+    int updateMemo(String friendId, String userId, String memo);
 }
