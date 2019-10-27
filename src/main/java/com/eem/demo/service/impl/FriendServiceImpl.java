@@ -107,4 +107,40 @@ public class FriendServiceImpl implements FriendService {
         }
         return users;
     }
+
+    @Override
+    public User fiendFriend(String friendId, String userId) {
+        List<Object> objects = friendRepository.findFriend(friendId);
+        String memo = friendRepository.findMemo(friendId, userId);
+
+        //先判断是否是好友
+        Friend friend = friendRepository.isFriend(userId, friendId);
+        if (friend == null){
+            return null;
+        }
+
+        //对object进行解析
+        User user = new User();
+        for (Object object: objects) {
+            Object[] rowArray = (Object[]) object;
+            Integer id = (Integer) rowArray[0];
+            String username = (String) rowArray[1];
+            String photo = (String) rowArray[2];
+            String address = (String) rowArray[3];
+            String gender = (String) rowArray[4];
+            String signature = (String) rowArray[5];
+            String state = (String) rowArray[6];
+            String memoName = memo;
+
+            user.setId(id);
+            user.setUsername(username);
+            user.setPhoto(photo);
+            user.setAddress(address);
+            user.setGender(gender);
+            user.setSignature(signature);
+            user.setState(state);
+            user.setMemoName(memoName);
+        }
+        return user;
+    }
 }

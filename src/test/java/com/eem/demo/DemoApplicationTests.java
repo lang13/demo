@@ -195,27 +195,35 @@ public class DemoApplicationTests {
 
     @Test
     public void test_13(){
-        List<Object> objects = friendRepository.findFriend("3");
-        List<User> users = new ArrayList<>();
-        for (Object object: objects) {
-            Object[] rowArray = (Object[])object;
+//        List<Object> objects = friendRepository.findFriend("3");
+//        List<User> users = new ArrayList<>();
+//        for (Object object: objects) {
+//            Object[] rowArray = (Object[])object;
+//
+//            User user = new User();
+//            Integer id = (Integer) rowArray[0];
+//            String username = (String) rowArray[1];
+//            String photo = (String) rowArray[2];
+//            String address = (String) rowArray[3];
+//            String gender = (String) rowArray[4];
+//            String signature = (String) rowArray[5];
+//            String state = (String) rowArray[6];
+//            String memoName = friendRepository.findMemo("3","4");
+//            user.setId(id);
+//            user.setUsername(username);
+//            user.setPhoto(photo);
+//            user.setAddress(address);
+//            user.setGender(gender);
+//            user.setSignature(signature);
+//            user.setState(state);
+//            user.setMemoName(memoName);
+//
+//            users.add(user);
+//        }
+//        System.out.println(users);
 
-            User user = new User();
-            Integer id = (Integer) rowArray[0];
-            String username = (String) rowArray[1];
-            String photo = (String) rowArray[2];
-            String state = (String) rowArray[3];
-            String memoName = friendRepository.findMemo("3","4");
-
-            user.setId(id);
-            user.setUsername(username);
-            user.setPhoto(photo);
-            user.setState(state);
-            user.setMemoName(memoName);
-
-            users.add(user);
-        }
-        System.out.println(users);
+        User user = friendServiceImpl.fiendFriend("3", "2");
+        System.out.println(user);
     }
 
     @Test

@@ -37,4 +37,12 @@ public interface FriendService {
      * @return
      */
     List<User> findFriends(String userId);
+
+    /**
+     * 查找用户好友的具体信息
+     * @param friendId
+     * @param userId
+     * @return
+     */
+    User fiendFriend(String friendId, String userId);
 }

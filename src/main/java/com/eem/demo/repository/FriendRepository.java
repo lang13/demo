@@ -65,7 +65,7 @@ public interface FriendRepository extends JpaRepository<Friend, Integer> {
      * @return
      */
     @Query(value =
-            "SELECT u.`id`,u.`username`,u.`photo`,s.`state` FROM state s\n" +
+            "SELECT u.`id`,u.`username`,u.`photo`,u.address,u.gender,u.signature,s.`state` FROM state s\n" +
             "RIGHT JOIN USER u ON u.`id` = s.`id`\n" +
             "WHERE u.`id` = ?1", nativeQuery = true)
     public List<Object> findFriend(String friendId);
