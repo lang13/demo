@@ -11,6 +11,7 @@ import com.eem.demo.repository.*;
 import com.eem.demo.service.*;
 import com.eem.demo.util.JwtUtil;
 import com.eem.demo.util.Md5Util;
+import com.eem.demo.util.PinYinUtil;
 import com.google.gson.Gson;
 import net.sourceforge.pinyin4j.PinyinHelper;
 import net.sourceforge.pinyin4j.format.HanyuPinyinCaseType;
@@ -272,28 +273,7 @@ public class DemoApplicationTests {
     @Test
     public void test_16(){
         String inputString = "这是一条试验字符窜!!!";
-
-        HanyuPinyinOutputFormat format = new HanyuPinyinOutputFormat();
-        format.setCaseType(HanyuPinyinCaseType.LOWERCASE);
-        format.setToneType(HanyuPinyinToneType.WITHOUT_TONE);
-        format.setVCharType(HanyuPinyinVCharType.WITH_V);
-
-        char[] input = inputString.trim().toCharArray();
-        String output = "";
-        try {
-            for (int i = 0; i < input.length; i++) {
-                if (java.lang.Character.toString(input[i]).matches(
-                        "[\\u4E00-\\u9FA5]+")) {
-                    String[] temp = PinyinHelper.toHanyuPinyinStringArray(
-                            input[i], format);
-                    output += temp[0];
-                } else
-                    output += java.lang.Character.toString(input[i]);
-            }
-        } catch (BadHanyuPinyinOutputFormatCombination e) {
-            e.printStackTrace();
-        }
-        System.out.println(inputString);
-        System.out.println(output);
+        String s = PinYinUtil.toPinYin(inputString);
+        System.out.println(s);
     }
 }
