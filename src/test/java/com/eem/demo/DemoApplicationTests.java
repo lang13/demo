@@ -6,11 +6,9 @@ import com.eem.demo.entity.RoomMember;
 import com.eem.demo.entity.State;
 import com.eem.demo.entity.User;
 import com.eem.demo.pojo.Message;
+import com.eem.demo.pojo.ReturnObj;
 import com.eem.demo.repository.*;
-import com.eem.demo.service.FriendService;
-import com.eem.demo.service.RoomService;
-import com.eem.demo.service.StateService;
-import com.eem.demo.service.UserService;
+import com.eem.demo.service.*;
 import com.eem.demo.util.JwtUtil;
 import com.eem.demo.util.Md5Util;
 import com.google.gson.Gson;
@@ -248,5 +246,14 @@ public class DemoApplicationTests {
 
         List<User> all = userRepository.findAll(specification);
         System.out.println(all);
+    }
+
+    @Autowired
+    TempService tempServiceImpl;
+
+    @Test
+    public void test_15(){
+        JSONArray objects = tempServiceImpl.requestRecord("c:/emm/record/room/1.txt");
+        System.out.println(objects);
     }
 }

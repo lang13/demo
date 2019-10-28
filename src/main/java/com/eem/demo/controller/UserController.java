@@ -1,5 +1,6 @@
 package com.eem.demo.controller;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.eem.demo.entity.State;
 import com.eem.demo.entity.Temp;
@@ -564,6 +565,51 @@ public class UserController {
         }else{
             obj = ReturnObj.fail();
         }
+        return obj;
+    }
+
+    @RequestMapping("/requestRecord")
+    public ReturnObj requestRecord(String friendId, String roomId, HttpServletRequest request){
+        ReturnObj obj;
+
+        logger.info("接收到的roomId: " + roomId);
+        logger.info("接收的的friendId: " + friendId);
+
+        String token = request.getHeader("token");
+        String userId = JwtUtil.getUserId(token);
+        //判空
+        String fileName;
+        String filePath;
+
+        //一对一聊天记录
+        if (friendId != null){
+            //传递了两个值得情况
+            if (roomId != null){
+                obj = ReturnObj.fail();
+                return  obj;
+            }
+            filePath = "c:/emm/record/user/";
+            int u = Integer.parseInt(userId);
+            int f = Integer.parseInt(friendId);
+            if (u < f){
+                fileName = userId + "and" + friendId + ".txt";
+            }else{
+                fileName = friendId + "and" + userId + ".txt";
+            }
+        }else{  //群聊聊天记录
+            if (roomId != null){
+                filePath = "c:/emm/record/room/";
+                fileName = roomId + ".txt";
+            }else{ //没有传递值的情况
+                obj = ReturnObj.fail();
+                return obj;
+            }
+        }
+        logger.info("file: " + filePath + fileName);
+        JSONArray objects = tempServiceImpl.requestRecord(filePath + fileName);
+        obj = ReturnObj.success();
+        obj.add("record", objects);
+
         return obj;
     }
 }
