@@ -135,6 +135,10 @@ public class UserWebSocket {
      * @param msg
      */
     public static void sendMsg(String toName, JSONObject msg){
+        //监测Pong
+        if (msg.get("type").equals("pong")) {
+            return;
+        }
         Session session = users.get(toName);
         if (session != null){
             session.getAsyncRemote().sendText(msg.toJSONString());
@@ -205,7 +209,7 @@ public class UserWebSocket {
      */
     public static void sendState(List<String> friends, String state, String username, String id){
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("type", "stateInform");
+        jsonObject.put("type", "sendState");
         jsonObject.put("id", id);
         jsonObject.put("username", username);
         jsonObject.put("state", state);

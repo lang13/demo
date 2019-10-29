@@ -87,6 +87,11 @@ public class RoomWebSocket {
      * @param object
      */
     public static void sendMsg(String username, String roomId, JSONObject object){
+        //监测Pong
+        if (object.get("type").equals("pong")) {
+            return;
+        }
+
         //新建线程保存聊天记录
         Thread thread = new Thread(){
             @Override
