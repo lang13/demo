@@ -408,7 +408,7 @@ public class UserController {
         ReturnObj obj;
         String token = request.getHeader("token");
         String userId = JwtUtil.getUserId(token);
-        User user = friendServiceImpl.fiendFriend(friendId, userId);
+        User user = friendServiceImpl.findFriend(friendId, userId);
         if (user == null){
             obj = ReturnObj.fail();
         }else{
@@ -554,14 +554,16 @@ public class UserController {
      * @param request
      * @return
      */
+    @RequestMapping("/updateMemo")
     public ReturnObj updateMemo(String friendId, String memoName, HttpServletRequest request){
         ReturnObj obj;
         String token = request.getHeader("token");
         String userId = JwtUtil.getUserId(token);
         //修改用户昵称
-        int i = friendServiceImpl.updateMemo(friendId, userId, memoName);
-        if (i > 0){
+        User user = friendServiceImpl.updateMemo(friendId, userId, memoName);
+        if (user != null){
             obj = ReturnObj.success();
+            obj.add("user",user);
         }else{
             obj = ReturnObj.fail();
         }

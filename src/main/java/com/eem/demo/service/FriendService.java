@@ -44,7 +44,7 @@ public interface FriendService {
      * @param userId
      * @return
      */
-    User fiendFriend(String friendId, String userId);
+    User findFriend(String friendId, String userId);
 
     /**
      * 修改好友备注名
@@ -53,5 +53,5 @@ public interface FriendService {
      * @param memo
      * @return
      */
-    int updateMemo(String friendId, String userId, String memo);
+    User updateMemo(String friendId, String userId, String memo);
 }

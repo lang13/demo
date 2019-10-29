@@ -42,6 +42,9 @@ public class User {
     @Transient
     private String memoName;
 
+    @Transient
+    private  String pinYin;
+
     public String getState() {
         return state;
     }
@@ -114,6 +117,14 @@ public class User {
         this.memoName = memoName;
     }
 
+    public String getPinYin() {
+        return pinYin;
+    }
+
+    public void setPinYin(String pinYin) {
+        this.pinYin = pinYin;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -126,6 +137,7 @@ public class User {
                 ", signature='" + signature + '\'' +
                 ", state='" + state + '\'' +
                 ", memoName='" + memoName + '\'' +
+                ", pinYin='" + pinYin + '\'' +
                 '}';
     }
 }

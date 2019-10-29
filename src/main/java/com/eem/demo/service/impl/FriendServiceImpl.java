@@ -5,6 +5,7 @@ import com.eem.demo.entity.User;
 import com.eem.demo.repository.FriendRepository;
 import com.eem.demo.repository.UserRepository;
 import com.eem.demo.service.FriendService;
+import com.eem.demo.util.PinYinUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -102,6 +103,11 @@ public class FriendServiceImpl implements FriendService {
             user.setPhoto(photo);
             user.setState(state);
             user.setMemoName(memoName);
+            //设置名字拼音
+            user.setPinYin(PinYinUtil.toPinYin(username));
+            if (memoName != null){
+                user.setPinYin(PinYinUtil.toPinYin(memoName));
+            }
 
             users.add(user);
         }
@@ -109,7 +115,7 @@ public class FriendServiceImpl implements FriendService {
     }
 
     @Override
-    public User fiendFriend(String friendId, String userId) {
+    public User findFriend(String friendId, String userId) {
         List<Object> objects = friendRepository.findFriend(friendId);
         String memo = friendRepository.findMemo(friendId, userId);
 
@@ -140,16 +146,21 @@ public class FriendServiceImpl implements FriendService {
             user.setSignature(signature);
             user.setState(state);
             user.setMemoName(memoName);
+            //设置名字拼音
+            user.setPinYin(PinYinUtil.toPinYin(username));
+            if (memoName != null){
+                user.setPinYin(PinYinUtil.toPinYin(memoName));
+            }
         }
         return user;
     }
 
     @Override
-    public int updateMemo(String friendId, String userId, String memo) {
+    public User updateMemo(String friendId, String userId, String memo) {
         //friendId < userId
         Friend friend = friendRepository.isFriend(userId, friendId);
         if (friend == null){
-            return 0;
+            return null;
         }else{
             int f_id = Integer.parseInt(friendId);
             int u_id = Integer.parseInt(userId);
@@ -159,7 +170,7 @@ public class FriendServiceImpl implements FriendService {
                 friend.setFriendMemo(memo);
             }
             friendRepository.save(friend);
-            return 1;
         }
+        return findFriend(friendId, userId);
     }
 }
