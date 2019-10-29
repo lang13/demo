@@ -136,7 +136,7 @@ public class UserWebSocket {
      */
     public static void sendMsg(String toName, JSONObject msg){
         //监测Pong
-        if (msg.get("type").equals("pong")) {
+        if (msg.get("type").equals("ping")) {
             return;
         }
         Session session = users.get(toName);

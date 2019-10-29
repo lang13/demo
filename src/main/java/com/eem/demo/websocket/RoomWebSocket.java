@@ -88,7 +88,7 @@ public class RoomWebSocket {
      */
     public static void sendMsg(String username, String roomId, JSONObject object){
         //监测Pong
-        if (object.get("type").equals("pong")) {
+        if (object.get("type").equals("ping")) {
             return;
         }
 
