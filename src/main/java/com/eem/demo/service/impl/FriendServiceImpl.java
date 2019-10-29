@@ -24,8 +24,11 @@ public class FriendServiceImpl implements FriendService {
     @Autowired
     UserRepository userRepository;
 
+    @Autowired
+    FriendService friendServiceImpl;
+
     @Override
-    public int addFriend(String userId, String friendId) {
+    public User addFriend(String userId, String friendId) {
         int user = Integer.valueOf(userId);
         int fended = Integer.valueOf(friendId);
         //新建Friend类,存入数据
@@ -44,12 +47,12 @@ public class FriendServiceImpl implements FriendService {
         if(isFriend == null){
             Friend friend = friendRepository.save(friend1);
             if (friend != null){
-                return 1;
+                return friendServiceImpl.findFriend(friendId, userId);
             }else{
-                return 0;
+                return null;
             }
         }else{
-            return 1;
+            return friendServiceImpl.findFriend(friendId, userId);
         }
     }
 

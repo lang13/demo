@@ -14,7 +14,7 @@ public interface FriendService {
      * @param friendId
      * @return
      */
-    int addFriend(String userId, String friendId);
+    User addFriend(String userId, String friendId);
 
     /**
      * 根据用户id查询好友id集合

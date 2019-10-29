@@ -229,8 +229,8 @@ public class DemoApplicationTests {
 
         friendServiceImpl.updateMemo("2","3","小四");
         friendServiceImpl.updateMemo("3","2","小G");
-        User user1 = friendServiceImpl.fiendFriend("2", "3");
-        User user = friendServiceImpl.fiendFriend("3", "2");
+        User user1 = friendServiceImpl.findFriend("2", "3");
+        User user = friendServiceImpl.findFriend("3", "2");
         System.out.println(user);
         System.out.println(user1);
     }

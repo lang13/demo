@@ -309,6 +309,7 @@ public class UserController {
     /**
      * 根据用户id请求添加好友
      * @param friendName
+     * @param msg 请求加好友时发送信息
      */
     @RequestMapping("/requestFriend")
     public ReturnObj requestFriend(String friendName, String msg, HttpServletRequest request){
@@ -319,7 +320,7 @@ public class UserController {
         String userId = JwtUtil.getUserId(token);
         if(userServiceImpl.exists(friendName)){
             JSONObject jsonObject = new JSONObject();
-            jsonObject.put("type", "inform");
+            jsonObject.put("type", "requestFriend");
             jsonObject.put("msg",msg);
             jsonObject.put("toName", friendName);
             jsonObject.put("fromName", username);
@@ -337,16 +338,17 @@ public class UserController {
 
     /**
      * 根据用户名添加好友
-     * @param fiendName
+     * @param friendName
      * @param request
      * @return
      */
     @RequestMapping("/addFriend")
-    public ReturnObj addFriend(String fiendName, HttpServletRequest request){
+    public ReturnObj addFriend(String friendName, HttpServletRequest request){
         ReturnObj obj = null;
-        logger.info("朋友姓名: " + fiendName);
+        logger.info("朋友姓名: " + friendName);
+
         //判断用户是否存在
-        if(!userServiceImpl.exists(fiendName)){
+        if(!userServiceImpl.exists(friendName)){
             obj = ReturnObj.fail();
             obj.setMsg("用户不存在!!!");
             return obj;
@@ -355,14 +357,14 @@ public class UserController {
             String token = request.getHeader("token");
             String userId = JwtUtil.getUserId(token);
             //获取好友id
-            User friend = userServiceImpl.findByUsername(fiendName);
+            User friend = userServiceImpl.findByUsername(friendName);
             //查询到的用户id
             logger.info("查询到的用户id: " + friend.getId());
             Integer friendId = friend.getId();
             //插入数据
-            int i = friendServiceImpl.addFriend(userId, String.valueOf(friendId));
+            User user = friendServiceImpl.addFriend(userId, String.valueOf(friendId));
             //判断是否成功
-            if (i <= 0){
+            if (user == null){
                 obj = ReturnObj.fail();
                 obj.setMsg("新增好友失败!!!");
 
@@ -370,9 +372,16 @@ public class UserController {
             }else{
                 obj = ReturnObj.success();
                 obj.setMsg("新增好友成功!!!");
-                List<User> users = friendServiceImpl.findFriends(userId);
-                obj.add("friends",users);
-
+                obj.add("friend",user);
+                //向请求者发送信息
+                String username = JwtUtil.getUsername(token);
+                JSONObject object = new JSONObject();
+                object.put("fromName", username);
+                object.put("toName", friendName);
+                object.put("type", "addFriend");
+                object.put("msg", username + "添加好友成功");
+                //发送websocket
+                UserWebSocket.sendMsg(friendName, object);
                 return obj;
             }
         }
