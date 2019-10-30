@@ -5,6 +5,10 @@
       <item index="0" class="java.lang.String" itemvalue="org.springframework.data.jpa.repository.Modifying" />
     </list>
   </component>
+  <component name="JavadocGenerationManager">
+    <option name="OUTPUT_DIRECTORY" value="$USER_HOME$/Desktop/emm/项目报告" />
+    <option name="OTHER_OPTIONS" value="-encoding utf-8 -charset utf-8 " />
+  </component>
   <component name="MavenProjectsManager">
     <option name="originalFiles">
       <list>

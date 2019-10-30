@@ -197,7 +197,6 @@ public class RoomController {
      * @param file
      * @param roomId
      * @param request
-     * @return
      */
     @RequestMapping("/sendRoomFile")
     public void sendRoomFile(@RequestParam("file") MultipartFile file, String roomId,
