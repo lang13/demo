@@ -139,6 +139,15 @@ public class UserWebSocket {
         if (msg.get("type").equals("ping")) {
             return;
         }
+
+        //新建线程保存聊天记录
+        Thread thread = new Thread(){
+            @Override
+            public void run() {
+                saveRecord(msg, (String)msg.get("toId"), (String)msg.get("fromId"));
+            }
+        };
+
         Session session = users.get(toName);
         if (session != null){
             session.getAsyncRemote().sendText(msg.toJSONString());
