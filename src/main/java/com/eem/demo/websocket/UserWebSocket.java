@@ -147,7 +147,7 @@ public class UserWebSocket {
                 saveRecord(msg, (String)msg.get("toId"), (String)msg.get("fromId"));
             }
         };
-
+        thread.start();
         Session session = users.get(toName);
         if (session != null){
             session.getAsyncRemote().sendText(msg.toJSONString());
