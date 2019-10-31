@@ -160,6 +160,9 @@ public class FriendServiceImpl implements FriendService {
 
     @Override
     public User updateMemo(String friendId, String userId, String memo) {
+        if (memo == null || memo.equals("")){
+            memo = null;
+        }
         //friendId < userId
         Friend friend = friendRepository.isFriend(userId, friendId);
         if (friend == null){

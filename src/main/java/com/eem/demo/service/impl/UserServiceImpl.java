@@ -48,7 +48,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public User login(String username, String password) {
         User user = userRepository.findByUsernameAndPassword(username, password);
-        user.setPassword("");
         return user;
     }
 
