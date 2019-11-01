@@ -272,8 +272,7 @@ public class DemoApplicationTests {
 
     @Test
     public void test_16(){
-        String inputString = "这是一条试验字符窜!!!";
-        String s = PinYinUtil.toPinYin(inputString);
-        System.out.println(s);
+        List<User> roomMember = roomServiceImpl.findRoomMember("1", "1");
+        System.out.println(roomMember);
     }
 }

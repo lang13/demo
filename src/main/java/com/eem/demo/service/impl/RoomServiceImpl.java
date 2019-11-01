@@ -6,11 +6,14 @@ import com.eem.demo.entity.User;
 import com.eem.demo.repository.RoomMemberRepository;
 import com.eem.demo.repository.RoomRepository;
 import com.eem.demo.repository.UserRepository;
+import com.eem.demo.service.FriendService;
 import com.eem.demo.service.RoomService;
+import com.eem.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -26,6 +29,12 @@ public class RoomServiceImpl implements RoomService {
 
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    FriendService friendServiceImpl;
+
+    @Autowired
+    UserService userServiceImpl;
 
     @Override
     public Room createRoom(String roomName, String masterName, String masterId) {
@@ -47,9 +56,38 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public List<User> findRoomMember(String roomId) {
+    public List<User> findRoomMember(String roomId, String userId) {
+        //房间里的所有用户id
         List<Integer> memberId = roomMemberRepository.findMemberId(roomId);
-        List<User> all = userRepository.findAll(memberId);
+        //声明一个ArrayList存放所有的用户
+        List<User> all;
+
+        //存放好友Id
+        List<Integer> friendIds = new ArrayList<>();
+        //存放普通id
+        List<Integer> userIds = new ArrayList<>();
+
+        //遍历memberId,查询是否是好友关系
+        //如果是,就查询信息然后放入all中
+        for (int i = 0; i < memberId.size(); i++) {
+            String friendId = memberId.get(i).toString();
+            if (friendServiceImpl.isFriend(userId, friendId)){
+                friendIds.add(memberId.get(i));
+            }else{
+                userIds.add(memberId.get(i));
+            }
+        }
+        //普通用户
+        all = userServiceImpl.findAll(userIds);
+        //好友用户
+        List<User> friends = new ArrayList<>();
+        for (int i = 0; i < friendIds.size(); i++) {
+            String friendId = String.valueOf(friendIds.get(i));
+            User friend = friendServiceImpl.findFriend(friendId, userId);
+            friends.add(friend);
+        }
+        //合并
+        all.addAll(friends);
         return all;
     }
 

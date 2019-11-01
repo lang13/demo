@@ -179,4 +179,14 @@ public class FriendServiceImpl implements FriendService {
         }
         return findFriend(friendId, userId);
     }
+
+    @Override
+    public boolean isFriend(String userId, String friendId) {
+        Friend friend = friendRepository.isFriend(userId, friendId);
+        if (friend == null){
+            return false;
+        }else{
+            return true;
+        }
+    }
 }

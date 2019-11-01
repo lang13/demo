@@ -25,9 +25,10 @@ public interface RoomService {
     /**
      * 根据群聊id查询群聊成员
      * @param roomId
+     * @param userId
      * @return
      */
-    List<User> findRoomMember(String roomId);
+    List<User> findRoomMember(String roomId, String userId);
 
     /**
      * 查询群聊的群主

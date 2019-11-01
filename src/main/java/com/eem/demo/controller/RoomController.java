@@ -171,9 +171,14 @@ public class RoomController {
      * @return
      */
     @RequestMapping("/findRoomMember")
-    public ReturnObj findRoomMember(String roomId){
+    public ReturnObj findRoomMember(String roomId, HttpServletRequest request){
         ReturnObj obj;
-        List<User> roomMember = roomServiceImpl.findRoomMember(roomId);
+        //获取用户id
+        String token = request.getHeader("token");
+        String userId = JwtUtil.getUserId(token);
+        //获取roomMember
+        List<User> roomMember = roomServiceImpl.findRoomMember(roomId, userId);
+
         if (roomMember.isEmpty()){
             obj = ReturnObj.fail();
             obj.setMsg("查询群聊成员失败!!!");

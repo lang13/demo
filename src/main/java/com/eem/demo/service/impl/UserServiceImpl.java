@@ -7,6 +7,7 @@ import com.eem.demo.repository.StateRepository;
 import com.eem.demo.repository.UserRepository;
 import com.eem.demo.service.UserService;
 import com.eem.demo.util.Md5Util;
+import com.eem.demo.util.PinYinUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -99,5 +100,15 @@ public class UserServiceImpl implements UserService {
             one.setGender(user.getGender());
         }
         return userRepository.save(one);
+    }
+
+    @Override
+    public List<User> findAll(List<Integer> userIds) {
+        List<User> all = userRepository.findAll(userIds);
+        for (int i = 0; i < all.size(); i++) {
+            String PinYin = PinYinUtil.toPinYin(all.get(i).getUsername());
+            all.get(i).setPinYin(PinYin);
+        }
+        return all;
     }
 }

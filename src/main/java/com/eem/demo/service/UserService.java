@@ -76,4 +76,11 @@ public interface UserService {
      * @return
      */
     User updateUser(User user, String userId);
+
+    /**
+     * 根据id集合查询User集合
+     * @param userIds
+     * @return
+     */
+    List<User> findAll(List<Integer> userIds);
 }

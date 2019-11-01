@@ -54,4 +54,12 @@ public interface FriendService {
      * @return
      */
     User updateMemo(String friendId, String userId, String memo);
+
+    /**
+     * 查询是否是好友关系
+     * @param userId
+     * @param friendId
+     * @return
+     */
+    boolean isFriend(String userId, String friendId);
 }
