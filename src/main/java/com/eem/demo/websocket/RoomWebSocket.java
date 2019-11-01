@@ -96,7 +96,9 @@ public class RoomWebSocket {
         Thread thread = new Thread(){
             @Override
             public void run() {
-                saveRecord(object, roomId);
+                if ("msg".equals(object.getString("type"))){
+                    saveRecord(object, roomId);
+                }
             }
         };
         thread.start();

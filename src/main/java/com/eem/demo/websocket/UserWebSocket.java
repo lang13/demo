@@ -144,7 +144,9 @@ public class UserWebSocket {
         Thread thread = new Thread(){
             @Override
             public void run() {
-                saveRecord(msg, (String)msg.get("toId"), (String)msg.get("fromId"));
+                if ("msg".equals(msg.getString("type"))){
+                    saveRecord(msg, (String)msg.get("toId"), (String)msg.get("fromId"));
+                }
             }
         };
         thread.start();

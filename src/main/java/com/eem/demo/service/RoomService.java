@@ -84,4 +84,6 @@ public interface RoomService {
      * @return
      */
     List<Integer> findRoomId(String memberId);
+
+    boolean exists(String roomId);
 }

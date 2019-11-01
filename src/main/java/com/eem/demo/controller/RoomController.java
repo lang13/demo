@@ -46,9 +46,14 @@ public class RoomController {
     private Logger logger = Logger.getLogger(this.getClass());
 
     /**
-     * 根据管理员名字和群名创建群聊
-     * @param roomName
-     * @return
+     * showdoc
+     * @catalog EMM考核项目/群聊模块
+     * @title 创建群聊
+     * @description 根据管理员用户名和群名创建群聊
+     * @method get/post
+     * @url http://2700v9g607.zicp.vip:18340/createRoom
+     * @param roomName 必须 string 群名
+     * @return {"code":100,"msg":"创建群成功!!!","extend":{"room":{"id":4,"master":"张三","masterId":1,"roomName":"试验群3"}}}
      */
     @RequestMapping("/createRoom")
     public ReturnObj createRoom(String roomName, HttpServletRequest request){
@@ -69,16 +74,34 @@ public class RoomController {
     }
 
     /**
-     * 根据用户名和房间id
-     * 拉用户进入群聊
-     * @param username
-     * @param roomId
-     * @return
+     * showdoc
+     * @catalog EMM考核项目/群聊模块
+     * @title 群聊添加成员
+     * @description 传入用户名和房间id就可以将用户加入群聊,暂时只能通过群成员拉好友进群,拉
+     * @method get/post
+     * @url http://2700v9g607.zicp.vip:18340/addRoomMember
+     * @param username 必须 string 用户名
+     * @param roomId 必须 string 房间id
+     * @remark 邀请用户后,会给用户发送一个websocket,用户接收到websocket后需要新建一个该群聊的websocket
      */
+    @RequestMapping("/addRoomMember")
     public ReturnObj addRoomMember(String username, String roomId, HttpServletRequest request){
         String token = request.getHeader("token");
         String from = JwtUtil.getUsername(token);
         ReturnObj obj;
+
+        //对用户名和房间id进行判读
+        if (!userServiceImpl.exists(username)){
+            obj = ReturnObj.fail();
+            obj.setMsg("用户不存在!!!");
+            return obj;
+        }
+        if (!roomServiceImpl.exists(roomId)){
+            obj = ReturnObj.fail();
+            obj.setMsg("房间不存在!!!");
+            return obj;
+        }
+
         RoomMember roomMember = roomServiceImpl.addRoomMember(username, roomId);
         if (roomMember == null){
             obj = ReturnObj.fail();
@@ -86,15 +109,35 @@ public class RoomController {
             obj = ReturnObj.success();
             //向被邀请者发送信息,告知他已经加入群聊,让小程序新建该房间的WebSocket
             JSONObject object = new JSONObject();
-            object.put("type", "inform");
-            object.put("value", from + "邀请你加入群聊");
+            object.put("type", "addRoomMember");
+            object.put("roomId", roomId);
+            object.put("msg", "你已加入群聊");
             object.put("to", username);
             object.put("from", from);
             UserWebSocket.sendMsg(username, object);
+
+            //发送群告知加入群聊
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("roomId", roomId);
+            jsonObject.put("username", username);
+            jsonObject.put("type", "addRoomMember");
+            jsonObject.put("msg", username + "加入群聊");
+            RoomWebSocket.sendMsg(username, roomId, jsonObject);
         }
         return obj;
     }
 
+    /**
+     * showdoc
+     * @catalog EMM考核项目/群聊模块
+     * @title 移出群聊
+     * @description 根据用户id和群聊房间号的id将用户移出群聊,操作前,会对请求者进行验证其是否是群主
+     * @method get/post
+     * @url http://2700v9g607.zicp.vip:18340/deleteRoomMember
+     * @param username 必须 string 需要删除的用户名
+     * @param roomId 必须 string 房间号
+     * @remark 如果不是管理员,就操作失败
+     */
     @RequestMapping("/deleteRoomMember")
     public ReturnObj deleteRoomMember(String username, String roomId, HttpServletRequest request){
         ReturnObj obj = null;
@@ -119,6 +162,10 @@ public class RoomController {
         return obj;
     }
     /**
+     * showdoc
+     * @catalog EMM考核项目/群聊模块
+     * @title 查询群聊成员
+     * @description 根据房间id,查询房间成员和管理员
      * 根据房间id查找房间成员
      * @param roomId
      * @return
@@ -141,11 +188,15 @@ public class RoomController {
     }
 
     /**
-     * 更改群主
-     * @param request
-     * @param masterName
-     * @param roomId
-     * @return
+     * showdoc
+     * @catalog EMM考核项目/群聊模块
+     * @title 修改群主
+     * @description 群主转让群主的位置
+     * @method get/post
+     * @url http://2700v9g607.zicp.vip:18340/updateRoomMaster
+     * @param masterName 必须 string 新群主的用户名
+     * @param roomId 必须 string 群聊的房间id
+     * @remark 只能是群主操作,会对请求者的身份进行验证
      */
     @RequestMapping("/updateRoomMaster")
     public ReturnObj updateRoomMaster(HttpServletRequest request, String masterName, String roomId){
@@ -167,12 +218,17 @@ public class RoomController {
     }
 
     /**
-     * 修改群聊房间名
-     * @param roomName
-     * @param roomId
-     * @param request
-     * @return
+     * showdoc
+     * @catalog EMM考核项目/群聊模块
+     * @title 更改群名
+     * @description 群主更改群聊的名字
+     * @method get/post
+     * @url http://2700v9g607.zicp.vip:18340/updateRoomName
+     * @param roomName 必须 string 新的房间名
+     * @param roomId 必须 string 群聊的房间id
+     * @remark 会对请求者的身份进行验证,如果不是群主,就返回错误信息
      */
+    @RequestMapping("/updateRoomName")
     public ReturnObj updateRoomName(String roomName, String roomId, HttpServletRequest request){
         ReturnObj obj;
         //获取用户名
@@ -193,10 +249,15 @@ public class RoomController {
     }
 
     /**
-     * 发送文件
-     * @param file
-     * @param roomId
-     * @param request
+     * showdoc
+     * @catalog EMM考核项目/群聊模块
+     * @title 群聊发送文件
+     * @description 群聊发送文件的url,区分于单对单聊天的发送文件
+     * @method post
+     * @url http://2700v9g607.zicp.vip:18340/sendRoomFile
+     * @param file 必须 file 需要发送的文件
+     * @param roomId 必须 string 发送的房间号
+     * @remark 无返回值,接收到文件后,会向群发送一个websocket信息(type为"file"),里面会带有文件的url
      */
     @RequestMapping("/sendRoomFile")
     public void sendRoomFile(@RequestParam("file") MultipartFile file, String roomId,
@@ -233,6 +294,15 @@ public class RoomController {
         }
     }
 
+    /**
+     * showdoc
+     * @catalog EMM考核项目/群聊模块
+     * @title 群聊接收文件
+     * @description 群聊时接收文件的url
+     * @method post
+     * @url http://2700v9g607.zicp.vip:18340/receiveRoomFile/{返回的文件id}
+     * @remark 无返回值,和单对单发送文件的逻辑基本相似
+     */
     @RequestMapping("/receiveRoomFile/{fileId}")
     public void receiveRoomFile(@PathVariable("fileId") String fileId, HttpServletResponse response){
         logger.info("接收到的fileId: " + fileId);
@@ -252,6 +322,16 @@ public class RoomController {
         }
     }
 
+    /**
+     * showdoc
+     * @catalog EMM考核项目/群聊模块
+     * @title 查询用户的所有已加入群聊的id
+     * @description 用户刚刚登陆时,先请求已加入的群聊id,然后逐个新建该群聊的websocket
+     * @method get/post
+     * @url http://2700v9g607.zicp.vip:18340/fiendRoomId
+     * @return {"code":100,"msg":"处理成功！","extend":{"roomId":[1,2,3,4]}}
+     * @remark 刚登陆就要发送的请求
+     */
     @RequestMapping("/findRoomId")
     public ReturnObj findRoomId(HttpServletRequest request){
         ReturnObj obj;

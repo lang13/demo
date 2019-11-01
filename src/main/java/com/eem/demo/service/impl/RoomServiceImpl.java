@@ -114,4 +114,14 @@ public class RoomServiceImpl implements RoomService {
     public List<Integer> findRoomId(String memberId) {
         return roomMemberRepository.findRoomId(memberId);
     }
+
+    @Override
+    public boolean exists(String roomId) {
+        Room one = roomRepository.getOne(Integer.valueOf(roomId));
+        if (one != null){
+            return true;
+        }else{
+            return false;
+        }
+    }
 }
