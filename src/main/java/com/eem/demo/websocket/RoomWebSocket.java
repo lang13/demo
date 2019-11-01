@@ -14,6 +14,15 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
+ * showdoc
+ * @catalog EMM考核项目/websocket
+ * @title 群聊
+ * @description 群聊发送信息的websocket
+ * @method websocket
+ * @url ws://2700v9g607.zicp.vip:18340/websocket/room/{roomId}/{username}
+ * @param roomId 必须 string 群聊id
+ * @param username 必须 string 自己的用户名
+ * @remark websocket.send()方法发送的必须是json字符串,不能是json对象.字符串中,必须包含roomId,username,发送文本信息时,type的值必须为"msg"
  * @author Administrator
  */
 @ServerEndpoint("/websocket/room/{roomId}/{username}")

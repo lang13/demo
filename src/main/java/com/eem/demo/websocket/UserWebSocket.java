@@ -24,6 +24,13 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
+ * showdoc
+ * @catalog EMM考核项目/websocket
+ * @title 单对单聊天
+ * @method websocket
+ * @url ws://2700v9g607.zicp.vip:18340/websocket/websocket/user/{username}
+ * @param username 必须 string 用户名
+ * @remark websocket.send()方法接收的是json字符串,不能是json对象,json字符串中,必须包含toName(接收者用户名),toId(接收者id),fromName(发送者用户名),fromId(发送者Id),发送文本信息时type的值必须是"msg"
  * @author Administrator
  */
 @Component
