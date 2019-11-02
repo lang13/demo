@@ -86,5 +86,17 @@ public interface RoomService {
      */
     List<Integer> findRoomId(String memberId);
 
+    /**
+     * 是否存在这个房间
+     * @param roomId
+     * @return
+     */
     boolean exists(String roomId);
+
+    /**
+     * 查找房间里的用户id
+     * @param roomId
+     * @return
+     */
+    List<String> findMemberName(String roomId);
 }

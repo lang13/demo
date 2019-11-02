@@ -162,4 +162,16 @@ public class RoomServiceImpl implements RoomService {
             return false;
         }
     }
+
+    @Override
+    public List<String> findMemberName(String roomId) {
+        List<Integer> memberId = roomMemberRepository.findMemberId(roomId);
+        List<User> all = userRepository.findAll(memberId);
+        //用户名
+        List<String> userNames = new ArrayList<>();
+        for (User user:all) {
+            userNames.add(user.getUsername());
+        }
+        return userNames;
+    }
 }

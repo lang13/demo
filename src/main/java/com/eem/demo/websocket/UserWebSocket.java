@@ -89,8 +89,11 @@ public class UserWebSocket {
             logger.info("获取到的jsonObjects: " + jsonObjects);
             for (int i = 0; i < jsonObjects.size(); i++) {
                 try {
+                    JSONObject msg = jsonObjects.get(i);
                     //同步异步的区别
-                    users.get(username).getBasicRemote().sendText(jsonObjects.get(i).toString());
+                    users.get(username).getBasicRemote().sendText(msg.toString());
+                    //保存聊天记录
+                    saveRecord(msg, msg.getString("toId"), msg.getString("formId"));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

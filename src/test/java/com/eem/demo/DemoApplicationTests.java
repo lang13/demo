@@ -272,7 +272,7 @@ public class DemoApplicationTests {
 
     @Test
     public void test_16(){
-        List<User> roomMember = roomServiceImpl.findRoomMember("1", "1");
-        System.out.println(roomMember);
+        List<String> memberId = roomServiceImpl.findMemberName("1");
+        System.out.println(memberId);
     }
 }

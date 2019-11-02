@@ -561,7 +561,7 @@ public class UserController {
 
             //给对方好友发送websocket信息
             JSONObject object = new JSONObject();
-            object.put("toName", username);
+            object.put("toName", friendName);
             object.put("fromName", username);
             object.put("type", "deleteFriend");
             object.put("msg", username + "和你解除好友关系!!!");
