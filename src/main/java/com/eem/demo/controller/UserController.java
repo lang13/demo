@@ -1,5 +1,6 @@
 package com.eem.demo.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.eem.demo.entity.State;
@@ -13,7 +14,9 @@ import com.eem.demo.service.TempService;
 import com.eem.demo.service.UserService;
 import com.eem.demo.util.JwtUtil;
 import com.eem.demo.util.Md5Util;
+import com.eem.demo.util.PinYinUtil;
 import com.eem.demo.websocket.UserWebSocket;
+import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.Logger;
 import org.aspectj.util.FileUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -161,18 +164,29 @@ public class UserController {
         try {
             //将文件保存至硬盘
             file.transferTo(dest);
-            ReturnObj obj = ReturnObj.success();
-            obj.setMsg("文件上传成功!!!");
+
             //获取用户名
             String username = JwtUtil.getUsername(request.getHeader("token"));
             //上传数据时,先将原文件删除
             String oldFile = userServiceImpl.findByUsername(username).getPhoto();
-            userServiceImpl.deleteFile(oldFile);
+            //判断老头像是否存在
+            if (oldFile != null){
+                userServiceImpl.deleteFile(oldFile);
+            }
 
-            userServiceImpl.updatePhoto(filename,username);
-            //返回上传的文件类
-            obj.add("photo",dest);
-            return obj;
+            logger.info("将头像信息写入数据库!!!");
+            int i = userServiceImpl.updatePhoto(filename, username);
+            if (i > 0){
+                //返回上传的文件类
+                ReturnObj obj = ReturnObj.success();
+                obj.setMsg("保存头像成功!!!");
+                obj.add("photo",dest);
+                return obj;
+            }else{
+                ReturnObj obj = ReturnObj.fail();
+                obj.setMsg("保存头像失败!!!");
+                return obj;
+            }
         } catch (IOException e) {
             e.printStackTrace();
             ReturnObj obj = ReturnObj.fail();
@@ -189,15 +203,22 @@ public class UserController {
      * @description 加载用户头像的接口, 图像是以字节码文件发送给请求用户
      * @method post
      * @url http://2700v9g607.zicp.vip:18340/photo/downloadPhoto
+     * @param photoPath 不是 string 如果要加载其他用户的头像,就将其他用户的头的路径传递过来
      * @remark 无参数也没有有用的返回值
      */
     @RequestMapping("/photo/downloadPhoto")
-    public ReturnObj downloadPhoto(HttpServletRequest request, HttpServletResponse response){
+    public ReturnObj downloadPhoto(HttpServletRequest request, HttpServletResponse response,
+                                   @RequestParam(value = "photoPath", required = false) String photoPath){
         response.setCharacterEncoding("utf-8");
-        //获取用户id
-        String userId = JwtUtil.getUserId(request.getHeader("token"));
-        //获取照片路径
-        String photoPath = userRepository.findOne(Integer.valueOf(1)).getPhoto();
+
+        logger.info("传过来的photoPath: " + photoPath);
+
+        if (photoPath == null || "".equals(photoPath)){
+            //获取用户id
+            String userId = JwtUtil.getUserId(request.getHeader("token"));
+            //获取照片路径
+            photoPath = userRepository.findOne(Integer.valueOf(userId)).getPhoto();
+        }
 
         //如果文件需要下载,那么就要设置响应头
 //        response.setHeader("Content-Disposition",
@@ -215,6 +236,7 @@ public class UserController {
         } catch (IOException e) {
             e.printStackTrace();
             ReturnObj obj = ReturnObj.fail();
+            obj.setMsg("头像不存在!!!");
             return obj;
         }
     }
@@ -381,14 +403,22 @@ public class UserController {
 
         String token = request.getHeader("token");
         String username = JwtUtil.getUsername(token);
-        String userId = JwtUtil.getUserId(token);
+
+        //获取自己的用户信息
+        User user = userServiceImpl.findByUsername(username);
+        user.setPinYin(PinYinUtil.toPinYin(user.getUsername()));
+
         if(userServiceImpl.exists(friendName)){
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("type", "requestFriend");
+            jsonObject.put("fromName", user.getUsername());
+            jsonObject.put("fromId", user.getId());
+            jsonObject.put("fromPhoto", user.getPhoto());
+            jsonObject.put("fromNamePinYin", PinYinUtil.toPinYin(user.getUsername()));
             jsonObject.put("msg",msg);
             jsonObject.put("toName", friendName);
-            jsonObject.put("fromName", username);
-            jsonObject.put("fromId", userId);
+            jsonObject.put("pinYin", PinYinUtil.toPinYin(friendName));
+            jsonObject.put("memoName", "");
             //发送WebSocket
             UserWebSocket.sendMsg(friendName,jsonObject);
 
@@ -424,6 +454,8 @@ public class UserController {
             //获取token以及用户id
             String token = request.getHeader("token");
             String userId = JwtUtil.getUserId(token);
+            logger.info("token中的id: " + userId);
+
             //获取好友id
             User friend = userServiceImpl.findByUsername(friendName);
             //查询到的用户id
@@ -441,13 +473,22 @@ public class UserController {
                 obj = ReturnObj.success();
                 obj.setMsg("新增好友成功!!!");
                 obj.add("friend",user);
-                //向请求者发送信息
+
+                //获取自己的用户信息
                 String username = JwtUtil.getUsername(token);
+                User oneself = userServiceImpl.findByUsername(username);
+                oneself.setPinYin(PinYinUtil.toPinYin(oneself.getUsername()));
+
+                //向请求者发送信息
                 JSONObject object = new JSONObject();
-                object.put("fromName", username);
+                object.put("fromName", oneself.getUsername());
+                object.put("fromId", oneself.getId());
+                object.put("fromPhoto", oneself.getPhoto());
+                object.put("fromNamePinYin", PinYinUtil.toPinYin(oneself.getUsername()));
                 object.put("toName", friendName);
                 object.put("type", "addFriend");
                 object.put("msg", "添加好友" + username + "成功");
+                object.put("memoName", "");
                 //发送websocket
                 UserWebSocket.sendMsg(friendName, object);
                 return obj;
@@ -588,12 +629,14 @@ public class UserController {
      * @url http://2700v9g607.zicp.vip:18340/sendFile
      * @param file 必须 file 需要发送的文件
      * @param toName 必须 string 接收者的用户名
+     * @return 里面包含着文件的url
      * @remark websocket的type为"file"
      */
     @RequestMapping("/sendFile")
-    public void sendFile(@RequestParam("file") MultipartFile file, String toName, HttpServletRequest request){
+    public ReturnObj sendFile(@RequestParam("file") MultipartFile file, String toName, String toId, HttpServletRequest request){
         String token = request.getHeader("token");
         String username = JwtUtil.getUsername(token);
+
         String originalFilename = file.getOriginalFilename();
         //获取后缀名
         String suffix  = originalFilename.substring(originalFilename.lastIndexOf("."));
@@ -601,6 +644,7 @@ public class UserController {
         //创建文件对象
         File dest = new File("C:/emm/test/"+uuid+suffix);
         //将文件保存到硬盘
+        Temp temp;
         try {
             //文件信息保存至数据库
             Temp tempFile = new Temp();
@@ -608,20 +652,31 @@ public class UserController {
             tempFile.setFilePath(dest.toString());
             tempFile.setReceive(toName);
             tempFile.setSender(username);
-            Temp temp = tempServiceImpl.saveFile(tempFile);
+            temp = tempServiceImpl.saveFile(tempFile);
             logger.info("文件: " + dest);
             file.transferTo(dest);
-            //WebSocket发送信息
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("type","file");
-            jsonObject.put("msg","/receiveFile/" + temp.getId());
-            jsonObject.put("fromName",username);
-            jsonObject.put("toName",toName);
-            logger.info("发送的json: " + jsonObject);
-            UserWebSocket.sendMsg(toName,jsonObject);
+//            //WebSocket发送信息
+//
+//            logger.info("给" + toName + "发送文件");
+//            JSONObject jsonObject = new JSONObject();
+//            jsonObject.put("type","file");
+//            jsonObject.put("msg","/receiveFile/" + temp.getId());
+//            jsonObject.put("fromName",username);
+//            jsonObject.put("fromId", userId);
+//            jsonObject.put("toName",toName);
+//            jsonObject.put("toId", toId);
+//
+//            logger.info("发送的json: " + jsonObject);
+//            UserWebSocket.sendMsg(toName,jsonObject);
         } catch (IOException e) {
             e.printStackTrace();
+            ReturnObj obj = ReturnObj.fail();
+            obj.setMsg("发送文件失败!!!");
+            return obj;
         }
+        ReturnObj obj = ReturnObj.success();
+        obj.add("url", "/receiveFile/" + temp.getId());
+        return obj;
     }
 
     /**

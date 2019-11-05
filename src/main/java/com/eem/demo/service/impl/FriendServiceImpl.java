@@ -30,23 +30,24 @@ public class FriendServiceImpl implements FriendService {
     @Override
     public User addFriend(String userId, String friendId) {
         int user = Integer.valueOf(userId);
-        int fended = Integer.valueOf(friendId);
+        int friend = Integer.valueOf(friendId);
+
         //新建Friend类,存入数据
         Friend friend1 = new Friend();
         //数据库中,userId<friendId
-        if(user <= fended){
+        if(user >= friend){
             friend1.setUserId(user);
-            friend1.setFriendId(fended);
+            friend1.setFriendId(friend);
         }else{
-            friend1.setUserId(fended);
-            friend1.setUserId(user);
+            friend1.setUserId(friend);
+            friend1.setFriendId(user);
         }
         //插入数据
         //插入数据前先判断是否已经有数据
         Friend isFriend = friendRepository.isFriend(userId, friendId);
         if(isFriend == null){
-            Friend friend = friendRepository.save(friend1);
-            if (friend != null){
+            Friend f = friendRepository.save(friend1);
+            if (f != null){
                 return friendServiceImpl.findFriend(friendId, userId);
             }else{
                 return null;

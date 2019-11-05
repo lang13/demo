@@ -75,6 +75,7 @@ public class UserWebSocket {
         this.username = username;
         this.id = String.valueOf(userServiceImpl.findByUsername(username).getId());
 
+        logger.info(username + "登陆");
         logger.info(username + "的好友列表: " + friends);
         //给好友发送在线信息
         sendState(this.friends, "在线", this.username, this.id);
@@ -93,7 +94,9 @@ public class UserWebSocket {
                     //同步异步的区别
                     users.get(username).getBasicRemote().sendText(msg.toString());
                     //保存聊天记录
-                    saveRecord(msg, msg.getString("toId"), msg.getString("formId"));
+                    if ("msg".equals(msg.getString("type")) || "file".equals(msg.getString("type"))){
+                        saveRecord(msg, msg.getString("toId"), msg.getString("formId"));
+                    }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -124,10 +127,18 @@ public class UserWebSocket {
      * 打算弃用这个方式来接收信息
      */
     @OnMessage
-    public void onMessage(String msg){
-        logger.info("接收到的meg: " + msg);
+    public void onMessage(String msg, Session session){
+
+        logger.info("接收到的msg: " + msg);
         JSONObject jsonObject = JSON.parseObject(msg);
         logger.info("转化为json格式后的msg: " + jsonObject);
+
+        //监测Pong
+        if (jsonObject.get("type").equals("ping")) {
+            jsonObject.put("type", "pong");
+            session.getAsyncRemote().sendText(jsonObject.toJSONString());
+        }
+
         //发送信息
         sendMsg(jsonObject.getString("toName"), jsonObject);
     }
@@ -145,10 +156,6 @@ public class UserWebSocket {
      * @param msg
      */
     public static void sendMsg(String toName, JSONObject msg){
-        //监测Pong
-        if (msg.get("type").equals("ping")) {
-            return;
-        }
 
         //新建线程保存聊天记录
         Thread thread = new Thread(){

@@ -103,7 +103,9 @@ public class RoomWebSocket {
                     //发送temp信息
                     this.session.getBasicRemote().sendText(msg.toString());
                     //保存聊天记录
-                    saveRecord(msg, msg.getString("toRoom"));
+                    if("msg".equals(msg.getString("type"))){
+                        saveRecord(msg, msg.getString("toRoom"));
+                    }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

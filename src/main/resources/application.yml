@@ -13,7 +13,7 @@ spring:
   #配置jpa
   jpa:
     #显示SQL语句
-    show-sql: true
+    show-sql: false
     #自动更新数据库表
     hibernate:
       ddl-auto: update

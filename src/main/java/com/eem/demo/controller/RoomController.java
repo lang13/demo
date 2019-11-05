@@ -144,13 +144,13 @@ public class RoomController {
         //获取请求人的username
         String token = request.getHeader("token");
         String username1 = JwtUtil.getUsername(token);
-        //判断是否是管理员
-        if (!roomServiceImpl.isMaster(username,roomId)){
+
+        //判断是否是管理员和自己
+        if (!roomServiceImpl.isMaster(username1,roomId) || !username1.equals(username)){
             obj = ReturnObj.fail();
-            obj.setMsg("您不是管理员!!!");
             return obj;
         }
-        //如果是管理员就进行删除操作
+        //如果是管理员或者自己就进行删除操作
         int i = roomServiceImpl.deleteMember(username, roomId);
         if(i > 0){
             obj = ReturnObj.success();
@@ -254,18 +254,11 @@ public class RoomController {
     }
 
     /**
-     * showdoc
-     * @catalog EMM考核项目/群聊模块
-     * @title 群聊发送文件
-     * @description 群聊发送文件的url,区分于单对单聊天的发送文件
-     * @method post
-     * @url http://2700v9g607.zicp.vip:18340/sendRoomFile
-     * @param file 必须 file 需要发送的文件
-     * @param roomId 必须 string 发送的房间号
-     * @remark 无返回值,接收到文件后,会向群发送一个websocket信息(type为"file"),里面会带有文件的url
+     * 所有文件统一一个接口上传和下载
      */
+    @Deprecated
     @RequestMapping("/sendRoomFile")
-    public void sendRoomFile(@RequestParam("file") MultipartFile file, String roomId,
+    public ReturnObj sendRoomFile(@RequestParam("file") MultipartFile file, String roomId,
                                   HttpServletRequest request){
         String token = request.getHeader("token");
         String username = JwtUtil.getUsername(token);
@@ -287,6 +280,7 @@ public class RoomController {
             //存入数据库
             Temp temp1 = tempServiceImpl.saveFile(temp);
             //WebSocket发送信息
+            logger.info("给" + roomId + "发送文件");
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("type","file");
             jsonObject.put("msg","/receiveRoomFile/" + temp1.getId());
@@ -296,18 +290,18 @@ public class RoomController {
             RoomWebSocket.sendMsg(username, roomId, jsonObject);
         } catch (IOException e) {
             e.printStackTrace();
+            ReturnObj obj = ReturnObj.fail();
+            obj.setMsg("发送文件失败!!!");
+            return obj;
         }
+        ReturnObj obj = ReturnObj.success();
+        return obj;
     }
 
     /**
-     * showdoc
-     * @catalog EMM考核项目/群聊模块
-     * @title 群聊接收文件
-     * @description 群聊时接收文件的url
-     * @method post
-     * @url http://2700v9g607.zicp.vip:18340/receiveRoomFile/{返回的文件id}
-     * @remark 无返回值,和单对单发送文件的逻辑基本相似
+     * 所有文件统一一个接口上传和下载
      */
+    @Deprecated
     @RequestMapping("/receiveRoomFile/{fileId}")
     public void receiveRoomFile(@PathVariable("fileId") String fileId, HttpServletResponse response){
         logger.info("接收到的fileId: " + fileId);

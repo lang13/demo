@@ -272,7 +272,6 @@ public class DemoApplicationTests {
 
     @Test
     public void test_16(){
-        List<String> memberId = roomServiceImpl.findMemberName("1");
-        System.out.println(memberId);
+        friendServiceImpl.addFriend("10","1");
     }
 }
