@@ -61,7 +61,16 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public int updateUsername(String nickname, String userId) {
-        return userRepository.updateUsername(nickname,userId);
+        User one = userRepository.getOne(Integer.valueOf(userId));
+        State state = stateRepository.findByUsername(one.getUsername());
+        //修改state里面的用户名信息
+        state.setUsername(nickname);
+        State i = stateRepository.save(state);
+        if (i != null){
+            return userRepository.updateUsername(nickname,userId);
+        }else{
+            return 0;
+        }
     }
 
     @Override

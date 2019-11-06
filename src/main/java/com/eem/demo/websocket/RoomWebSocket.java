@@ -103,9 +103,7 @@ public class RoomWebSocket {
                     //发送temp信息
                     this.session.getBasicRemote().sendText(msg.toString());
                     //保存聊天记录
-                    if("msg".equals(msg.getString("type"))){
-                        saveRecord(msg, msg.getString("toRoom"));
-                    }
+                    saveRecord(msg, msg.getString("toRoom"));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -157,9 +155,7 @@ public class RoomWebSocket {
         Thread thread = new Thread(){
             @Override
             public void run() {
-                if ("msg".equals(msg.getString("type"))){
-                    saveRecord(msg, roomId);
-                }
+                saveRecord(msg, roomId);
             }
         };
         thread.start();
@@ -212,6 +208,16 @@ public class RoomWebSocket {
      * @param RoomId
      */
     private static void saveRecord(JSONObject object, String RoomId){
+        //判断json数据里面的type类型
+        List<String> types = new ArrayList<>();
+        types.add("requestFriend");
+        types.add("addFriend");
+        types.add("deleteFriend");
+        types.add("sendState");
+        if (types.contains(object.getString("type"))){
+            return;
+        }
+
         File file = new File("C:/emm/record/room/"+RoomId+".txt");
         try(
                 FileWriter fileWriter = new FileWriter(file,true);

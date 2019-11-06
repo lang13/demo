@@ -535,7 +535,7 @@ public class UserController {
      * @title 查询某个好友的详细信息
      * @description 根据好友id查询某个好友的详细信息(地址,个性签名,性别)
      * @method get/post
-     * @url http://2700v9g607.zicp.vip:18340/fiendFriend
+     * @url http://2700v9g607.zicp.vip:18340/findFriend
      * @param friendId 必须 string 好友的用户id
      * @return {"code":100,"msg":"处理成功！","extend":{"friend":{"id":3,"username":"GDUT","password":null,"photo":"C:/emm/0d33be3b-b3d7-4d48-9488-865ea3dc8b4f.png","gender":"男","address":"广东惠州","signature":"lang","state":"离线","memoName":"小G","pinYin":"xiaoG"}}}
      * @remark 如果不是好友,则会显示"处理失败"
@@ -593,6 +593,8 @@ public class UserController {
         String token = request.getHeader("token");
         String userId = JwtUtil.getUserId(token);
         String username = JwtUtil.getUsername(token);
+
+        logger.info("需要删除的好友名字: " + friendName);
 
         //删除好友
         int i = friendServiceImpl.deleteFriend(userId, friendName);
@@ -718,6 +720,7 @@ public class UserController {
      */
     @RequestMapping("/updateState")
     public void updateState(String state, HttpServletRequest request){
+        logger.info("接收到的state: " + state);
         String token = request.getHeader("token");
         String username = JwtUtil.getUsername(token);
         String userId = JwtUtil.getUserId(token);
@@ -728,8 +731,9 @@ public class UserController {
         for (int i = 0; i < users.size(); i++) {
             friends.add(users.get(i).getUsername());
         }
-        //发送状态信息
+        //发送状态信息和写入数据库
         UserWebSocket.sendState(friends, state, username, userId);
+        stateServiceImpl.updateState(state, username);
     }
 
     /**

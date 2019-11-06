@@ -5,6 +5,7 @@ import com.eem.demo.entity.User;
 import com.eem.demo.repository.FriendRepository;
 import com.eem.demo.repository.UserRepository;
 import com.eem.demo.service.FriendService;
+import com.eem.demo.service.UserService;
 import com.eem.demo.util.PinYinUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,9 @@ public class FriendServiceImpl implements FriendService {
 
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    UserService userServiceImpl;
 
     @Autowired
     FriendService friendServiceImpl;

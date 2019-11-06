@@ -94,9 +94,7 @@ public class UserWebSocket {
                     //同步异步的区别
                     users.get(username).getBasicRemote().sendText(msg.toString());
                     //保存聊天记录
-                    if ("msg".equals(msg.getString("type")) || "file".equals(msg.getString("type"))){
-                        saveRecord(msg, msg.getString("toId"), msg.getString("formId"));
-                    }
+                    saveRecord(msg, msg.getString("toId"), msg.getString("formId"));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -146,6 +144,11 @@ public class UserWebSocket {
     @OnError
     public void onError(Throwable error) {
         logger.info("发生错误" + new Date());
+        //给好友发送在线信息
+        sendState(this.friends, "离线", this.username, this.id);
+
+        //设置用户状态为离线
+        stateServiceImpl.updateState("离线", username);
         error.printStackTrace();
     }
 
@@ -161,9 +164,7 @@ public class UserWebSocket {
         Thread thread = new Thread(){
             @Override
             public void run() {
-                if ("msg".equals(msg.getString("type"))){
-                    saveRecord(msg, (String)msg.get("toId"), (String)msg.get("fromId"));
-                }
+                saveRecord(msg, (String)msg.get("toId"), (String)msg.get("fromId"));
             }
         };
         thread.start();
@@ -194,6 +195,15 @@ public class UserWebSocket {
      * @param fromId
      */
     private static void saveRecord(JSONObject object, String toId, String fromId){
+        List<String> types = new ArrayList<>();
+        types.add("requestFriend");
+        types.add("addFriend");
+        types.add("deleteFriend");
+        types.add("sendState");
+        if (types.contains(object.getString("type"))){
+            return;
+        }
+
         //新建文件类
         String fileName;
         if (Integer.parseInt(toId) < Integer.parseInt(fromId)){

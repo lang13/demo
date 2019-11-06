@@ -19,7 +19,7 @@ public class JwtUtil {
     /**
      * 定义过期时间 150分钟
      */
-    private static final long EXPIRE_TIME = 1500 * 60 * 1000;
+//    private static final long EXPIRE_TIME = 1500 * 60 * 1000;
 
     /**
      * token的私钥
@@ -36,7 +36,7 @@ public class JwtUtil {
     public static String sign(String username, String userId){
         try {
             //过期时间
-            Date date = new Date(System.currentTimeMillis() + EXPIRE_TIME);
+//            Date date = new Date(System.currentTimeMillis() + EXPIRE_TIME);
             //签名信息
             Algorithm algorithm = Algorithm.HMAC256(TOKEN_SECRET);
             //设置头部信息
@@ -48,7 +48,7 @@ public class JwtUtil {
                     .withHeader(header)
                     .withClaim("loginName", username)
                     .withClaim("userId", userId)
-                    .withExpiresAt(date)
+//                    .withExpiresAt(date)
                     .sign(algorithm);
         } catch (UnsupportedEncodingException e) {
             return null;

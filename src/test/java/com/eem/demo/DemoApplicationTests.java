@@ -272,6 +272,14 @@ public class DemoApplicationTests {
 
     @Test
     public void test_16(){
-        friendServiceImpl.addFriend("10","1");
+        File file = new File("C:/test.jpg");
+        System.out.println(file.exists());
+        String name = file.getName();
+        System.out.println(name);
+        String substring = name.substring(0, name.lastIndexOf("."));
+        System.out.println(substring);
+
+        //重命名
+
     }
 }
