@@ -200,7 +200,7 @@ public class UserWebSocket {
         types.add("addFriend");
         types.add("deleteFriend");
         types.add("sendState");
-        if (types.contains(object.getString("type"))){
+        if (object.getString("type") == null || types.contains(object.getString("type"))){
             return;
         }
 
