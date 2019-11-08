@@ -127,15 +127,15 @@ public class UserWebSocket {
     @OnMessage
     public void onMessage(String msg, Session session){
 
-        logger.info("接收到的msg: " + msg);
         JSONObject jsonObject = JSON.parseObject(msg);
-        logger.info("转化为json格式后的msg: " + jsonObject);
-
-        //监测Pong
+        //监测Ping
         if (jsonObject.get("type").equals("ping")) {
             jsonObject.put("type", "pong");
             session.getAsyncRemote().sendText(jsonObject.toJSONString());
+            return;
         }
+        logger.info("转化为json格式后的msg: " + jsonObject);
+
 
         //发送信息
         sendMsg(jsonObject.getString("toName"), jsonObject);
@@ -164,7 +164,7 @@ public class UserWebSocket {
         Thread thread = new Thread(){
             @Override
             public void run() {
-                saveRecord(msg, (String)msg.get("toId"), (String)msg.get("fromId"));
+                saveRecord(msg, String.valueOf(msg.get("toId")), String.valueOf(msg.get("fromId")));
             }
         };
         thread.start();

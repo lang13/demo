@@ -125,10 +125,17 @@ public class RoomWebSocket {
 
     @OnMessage
     public void onMessage(String msg){
-        logger.info("收到的msg为: " + msg);
         JSONObject object = JSON.parseObject(msg);
         String username = object.getString("fromName");
         String roomId = object.getString("toRoom");
+        //监测Ping
+        if (object.get("type").equals("ping")) {
+            object.put("type", "pong");
+            session.getAsyncRemote().sendText(object.toJSONString());
+            return;
+        }
+        logger.info("收到的msg为: " + object);
+
         //发送信息
         sendMsg(username, roomId, object);
     }
@@ -186,6 +193,9 @@ public class RoomWebSocket {
                 jsonObjects.add(msg);
                 temp.put(key, jsonObjects);
                 logger.info("群聊temp的值为: " + temp);
+
+                //消息提醒的websocket发送提醒信息
+                TempWebSocket.sendMsg(msg, username);
             }
         }
     }
