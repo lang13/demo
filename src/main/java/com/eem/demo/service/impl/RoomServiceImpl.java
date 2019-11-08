@@ -94,7 +94,7 @@ public class RoomServiceImpl implements RoomService {
     @Override
     public User findRoomMaster(String roomId) {
         Room room = roomRepository.findOne(Integer.valueOf(roomId));
-        int id = room.getId();
+        int id = room.getMasterId();
         User one = userRepository.findOne(id);
         return one;
     }
@@ -173,5 +173,11 @@ public class RoomServiceImpl implements RoomService {
             userNames.add(user.getUsername());
         }
         return userNames;
+    }
+
+    @Override
+    public String findRoomName(String roomId) {
+        Room room = roomRepository.findOne(Integer.valueOf(roomId));
+        return room.getRoomName();
     }
 }

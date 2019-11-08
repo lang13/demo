@@ -69,7 +69,7 @@ public class TempWebSocket {
     public static void sendMsg(JSONObject msg, String username){
         Session session = users.get(username);
         if (session != null){
-            logger.info("temp里面的msg: " + msg);
+            logger.info("TempWebSocket里面的msg: " + msg);
             session.getAsyncRemote().sendText(msg.toJSONString());
         }
     }

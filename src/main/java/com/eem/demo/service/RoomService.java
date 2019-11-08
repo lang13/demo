@@ -99,4 +99,11 @@ public interface RoomService {
      * @return
      */
     List<String> findMemberName(String roomId);
+
+    /**
+     * 查询群聊名
+     * @param roomId
+     * @return
+     */
+    String findRoomName(String roomId);
 }

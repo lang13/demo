@@ -200,6 +200,7 @@ public class UserWebSocket {
         types.add("addFriend");
         types.add("deleteFriend");
         types.add("sendState");
+        types.add("addRoomMember");
         if (object.getString("type") == null || types.contains(object.getString("type"))){
             return;
         }
@@ -234,8 +235,8 @@ public class UserWebSocket {
 
         User user = userServiceImpl.findByUsername(username);
         List<User> friend = friendServiceImpl.findFriends(String.valueOf(user.getId()));
-        for (int i = 0; i < friend.size(); i++) {
-            friends.add(friend.get(i).getUsername());
+        for (User u : friend) {
+            friends.add(u.getUsername());
         }
         return friends;
     }

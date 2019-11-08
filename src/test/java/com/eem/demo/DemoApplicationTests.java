@@ -2,6 +2,7 @@ package com.eem.demo;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
+import com.eem.demo.entity.Room;
 import com.eem.demo.entity.RoomMember;
 import com.eem.demo.entity.State;
 import com.eem.demo.entity.User;
@@ -260,14 +261,8 @@ public class DemoApplicationTests {
 
     @Test
     public void test_15(){
-        String msg = "试一下拼音的jar包";
-        System.out.println(msg);
-        String[] strings = PinyinHelper.toHanyuPinyinStringArray(msg.charAt(0));
-
-        for (String pinyin: strings
-             ) {
-            System.out.println(pinyin);
-        }
+        List<User> friends = friendServiceImpl.findFriends("11");
+        System.out.println(friends);
     }
 
     @Test
@@ -281,5 +276,22 @@ public class DemoApplicationTests {
 
         //重命名
 
+    }
+
+    @Autowired
+    RoomRepository roomRepository;
+    @Test
+    public void test_17(){
+//        RoomMember roomMember = roomServiceImpl.addRoomMember("gg", "84");
+//        System.out.println(roomMember);
+
+//        List<String> memberName = roomServiceImpl.findMemberName("84");
+//        System.out.println(memberName);
+
+        String roomName = roomServiceImpl.findRoomName("1");
+        System.out.println(roomName);
+
+//        Room one = roomRepository.findOne(1);
+//        System.out.println(one.getRoomName());
     }
 }

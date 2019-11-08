@@ -26,7 +26,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @url ws://2700v9g607.zicp.vip:18340/websocket/room/{roomId}/{username}
  * @param roomId 必须 string 群聊id
  * @param username 必须 string 自己的用户名
- * @remark websocket.send()方法发送的必须是json字符串,不能是json对象.字符串中,必须包含roomId,username,发送文本信息时,type的值必须为"msg"
+ * @remark websocket.send()方法发送的必须是json字符串,不能是json对象.字符串中,必须包含roomId,username,发送文本信息时
  * @author Administrator
  */
 @ServerEndpoint("/websocket/room/{roomId}/{username}")
@@ -137,7 +137,7 @@ public class RoomWebSocket {
         logger.info("收到的msg为: " + object);
 
         //发送信息
-        sendMsg(username, roomId, object);
+        sendMsg(username, object.getString("roomId"), object);
     }
 
     @OnError
@@ -147,7 +147,6 @@ public class RoomWebSocket {
     }
 
     /**
-     * 发送信息时要将自己排除
      * @param username
      * @param roomId
      * @param object
@@ -167,16 +166,15 @@ public class RoomWebSocket {
         };
         thread.start();
         //获取要发送信息的房间里的用户session
+//        logger.info("调试: " + roomId);
         ConcurrentHashMap<String, Session> users = rooms.get(roomId);
-        //获取发送者的session
-        Session mySession = users.get(username);
 
         //获取房间的群成员名字
         List<String> names = membersName.get(roomId);
         for (String name:names) {
             Session session = users.get(name);
             //不为空时发送信息
-            if (session != null && !mySession.equals(session)){
+            if (session != null){
                 session.getAsyncRemote().sendText(msg.toJSONString());
             }
             //为空时存放temp
@@ -195,7 +193,7 @@ public class RoomWebSocket {
                 logger.info("群聊temp的值为: " + temp);
 
                 //消息提醒的websocket发送提醒信息
-                TempWebSocket.sendMsg(msg, username);
+                TempWebSocket.sendMsg(msg, name);
             }
         }
     }
@@ -224,6 +222,7 @@ public class RoomWebSocket {
         types.add("addFriend");
         types.add("deleteFriend");
         types.add("sendState");
+        types.add("addRoomMember");
         if (object.getString("type") == null || types.contains(object.getString("type"))){
             return;
         }

@@ -54,4 +54,14 @@ public class Room {
     public void setRoomName(String roomName) {
         this.roomName = roomName;
     }
+
+    @Override
+    public String toString() {
+        return "Room{" +
+                "id=" + id +
+                ", master='" + master + '\'' +
+                ", masterId=" + masterId +
+                ", roomName='" + roomName + '\'' +
+                '}';
+    }
 }

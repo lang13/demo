@@ -86,6 +86,9 @@ public class RoomController {
      */
     @RequestMapping("/addRoomMember")
     public ReturnObj addRoomMember(String username, String roomId, HttpServletRequest request){
+        logger.info("需要添加成员的房间Id: " + roomId);
+        logger.info("需要添加的成员: " + username);
+
         String token = request.getHeader("token");
         String from = JwtUtil.getUsername(token);
         ReturnObj obj;
@@ -103,6 +106,7 @@ public class RoomController {
         }
 
         RoomMember roomMember = roomServiceImpl.addRoomMember(username, roomId);
+        logger.info(roomMember);
         if (roomMember == null){
             obj = ReturnObj.fail();
         }else{
@@ -112,8 +116,9 @@ public class RoomController {
             object.put("type", "addRoomMember");
             object.put("roomId", roomId);
             object.put("msg", "你已加入群聊");
-            object.put("to", username);
-            object.put("from", from);
+            object.put("toName", username);
+            object.put("fromName", from);
+            object.put("roomName", roomServiceImpl.findRoomName(roomId));
             UserWebSocket.sendMsg(username, object);
 
             //发送群告知加入群聊
@@ -122,7 +127,7 @@ public class RoomController {
             jsonObject.put("username", username);
             jsonObject.put("type", "addRoomMember");
             jsonObject.put("msg", username + "加入群聊");
-            RoomWebSocket.sendMsg(username, roomId, jsonObject);
+            RoomWebSocket.sendMsg(from, roomId, jsonObject);
         }
         return obj;
     }
