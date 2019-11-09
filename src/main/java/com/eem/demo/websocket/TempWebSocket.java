@@ -27,6 +27,8 @@ import java.util.concurrent.ConcurrentHashMap;
 @Component
 @ServerEndpoint("/websocket/temp/{username}")
 public class TempWebSocket {
+    private String username;
+
     /**
      * 日志功能
      */
@@ -42,6 +44,8 @@ public class TempWebSocket {
 
     @OnOpen
     public void onOpen(Session session, @PathParam("username")String username){
+        this.username = username;
+
         //放入session
         users.put(username,session);
     }
@@ -53,7 +57,7 @@ public class TempWebSocket {
         if (object.get("type").equals("ping")) {
             object.put("type", "pong");
             session.getAsyncRemote().sendText(object.toJSONString());
-            logger.info("TempWebSocket的心跳包");
+            logger.info(this.username + "的TempWebSocket的心跳包");
         }
     }
 

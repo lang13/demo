@@ -131,7 +131,7 @@ public class UserWebSocket {
         if (jsonObject.get("type").equals("ping")) {
             jsonObject.put("type", "pong");
             session.getAsyncRemote().sendText(jsonObject.toJSONString());
-            logger.info("UserWebSocket的心跳包");
+            logger.info(this.username + "的UserWebSocket心跳包");
             return;
         }
         logger.info("转化为json格式后的msg: " + jsonObject);

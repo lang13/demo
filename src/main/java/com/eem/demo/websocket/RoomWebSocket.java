@@ -132,7 +132,7 @@ public class RoomWebSocket {
         if (object.get("type").equals("ping")) {
             object.put("type", "pong");
             session.getAsyncRemote().sendText(object.toJSONString());
-            logger.info("RoomWebSocket的心跳包");
+            logger.info(this.username + "in" + this.roomId + "的RoomWebSocket的心跳包");
             return;
         }
         logger.info("收到的msg为: " + object);
