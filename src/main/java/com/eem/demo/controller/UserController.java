@@ -635,7 +635,8 @@ public class UserController {
      * @remark websocket的type为"file"
      */
     @RequestMapping("/sendFile")
-    public ReturnObj sendFile(@RequestParam("file") MultipartFile file, String toName, String toId, HttpServletRequest request){
+    public ReturnObj sendFile(@RequestParam("file") MultipartFile file, @RequestParam(required = false) String toName,
+                              @RequestParam(required = false) String roomId, HttpServletRequest request){
         String token = request.getHeader("token");
         String username = JwtUtil.getUsername(token);
 
@@ -652,24 +653,15 @@ public class UserController {
             Temp tempFile = new Temp();
             //设置file类
             tempFile.setFilePath(dest.toString());
-            tempFile.setReceive(toName);
+            if (toName != null || "".equals(toName)){
+                tempFile.setReceive(toName);
+            }else{
+                tempFile.setReceive(roomId);
+            }
             tempFile.setSender(username);
             temp = tempServiceImpl.saveFile(tempFile);
             logger.info("文件: " + dest);
             file.transferTo(dest);
-//            //WebSocket发送信息
-//
-//            logger.info("给" + toName + "发送文件");
-//            JSONObject jsonObject = new JSONObject();
-//            jsonObject.put("type","file");
-//            jsonObject.put("msg","/receiveFile/" + temp.getId());
-//            jsonObject.put("fromName",username);
-//            jsonObject.put("fromId", userId);
-//            jsonObject.put("toName",toName);
-//            jsonObject.put("toId", toId);
-//
-//            logger.info("发送的json: " + jsonObject);
-//            UserWebSocket.sendMsg(toName,jsonObject);
         } catch (IOException e) {
             e.printStackTrace();
             ReturnObj obj = ReturnObj.fail();

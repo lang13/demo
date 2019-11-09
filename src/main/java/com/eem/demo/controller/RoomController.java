@@ -259,7 +259,14 @@ public class RoomController {
     }
 
     /**
-     * 所有文件统一一个接口上传和下载
+     * showdoc
+     * @catalog EMM考核项目/群聊模块
+     * @title 群聊发送文件
+     * @description 统一一个接口上传需要发送的文件,单对单聊天发送文件那个url
+     * @method post
+     * @url http://2700v9g607.zicp.vip:18340/sendFile
+     * @param file 必须 file 需要上传的文件
+     * @param roomId 必须 string 发送群的id
      */
     @Deprecated
     @RequestMapping("/sendRoomFile")
@@ -275,6 +282,7 @@ public class RoomController {
         File dest = new File("C:/emm/test/" + string + suffix);
 
         //将文件写入硬盘
+        Temp temp1;
         try {
             file.transferTo(dest);
             //新建temp类
@@ -283,16 +291,9 @@ public class RoomController {
             temp.setReceive(roomId);
             temp.setFilePath(dest.toString());
             //存入数据库
-            Temp temp1 = tempServiceImpl.saveFile(temp);
+            temp1 = tempServiceImpl.saveFile(temp);
             //WebSocket发送信息
             logger.info("给" + roomId + "发送文件");
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("type","file");
-            jsonObject.put("msg","/receiveRoomFile/" + temp1.getId());
-            jsonObject.put("from",username);
-            jsonObject.put("to",roomId);
-            logger.info("发送的jsonObject: " + jsonObject);
-            RoomWebSocket.sendMsg(username, roomId, jsonObject);
         } catch (IOException e) {
             e.printStackTrace();
             ReturnObj obj = ReturnObj.fail();
@@ -300,10 +301,17 @@ public class RoomController {
             return obj;
         }
         ReturnObj obj = ReturnObj.success();
+        obj.add("url", "/receiveFile/" + temp1.getId());
         return obj;
     }
 
     /**
+     * showdoc
+     * @catalog EMM考核项目/群聊模块
+     * @title 群聊接收文件
+     * @description 统一一个接口下载文件
+     * @method get/post
+     * @url http://2700v9g607.zicp.vip:18340/websocket发过去的url
      * 所有文件统一一个接口上传和下载
      */
     @Deprecated

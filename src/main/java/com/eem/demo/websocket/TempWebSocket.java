@@ -53,6 +53,7 @@ public class TempWebSocket {
         if (object.get("type").equals("ping")) {
             object.put("type", "pong");
             session.getAsyncRemote().sendText(object.toJSONString());
+            logger.info("TempWebSocket的心跳包");
         }
     }
 

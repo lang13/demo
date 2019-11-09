@@ -126,18 +126,19 @@ public class RoomWebSocket {
     @OnMessage
     public void onMessage(String msg){
         JSONObject object = JSON.parseObject(msg);
-        String username = object.getString("fromName");
-        String roomId = object.getString("toRoom");
+        String username = object.getString("username");
+        String roomId = object.getString("roomId");
         //监测Ping
         if (object.get("type").equals("ping")) {
             object.put("type", "pong");
             session.getAsyncRemote().sendText(object.toJSONString());
+            logger.info("RoomWebSocket的心跳包");
             return;
         }
         logger.info("收到的msg为: " + object);
 
         //发送信息
-        sendMsg(username, object.getString("roomId"), object);
+        sendMsg(username, roomId, object);
     }
 
     @OnError

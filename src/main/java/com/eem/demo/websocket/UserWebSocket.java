@@ -45,7 +45,6 @@ public class UserWebSocket {
      * 验证用户是否在线
      * 以及用户发送信息
      */
-
     private static Map<String, Session> users;
     static{
         users  = new ConcurrentHashMap<>();
@@ -132,6 +131,7 @@ public class UserWebSocket {
         if (jsonObject.get("type").equals("ping")) {
             jsonObject.put("type", "pong");
             session.getAsyncRemote().sendText(jsonObject.toJSONString());
+            logger.info("UserWebSocket的心跳包");
             return;
         }
         logger.info("转化为json格式后的msg: " + jsonObject);
