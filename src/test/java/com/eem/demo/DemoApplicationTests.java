@@ -2,42 +2,24 @@ package com.eem.demo;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
-import com.eem.demo.entity.Room;
-import com.eem.demo.entity.RoomMember;
 import com.eem.demo.entity.State;
 import com.eem.demo.entity.User;
 import com.eem.demo.pojo.Message;
-import com.eem.demo.pojo.ReturnObj;
 import com.eem.demo.repository.*;
 import com.eem.demo.service.*;
 import com.eem.demo.util.JwtUtil;
 import com.eem.demo.util.Md5Util;
-import com.eem.demo.util.PinYinUtil;
-import com.google.gson.Gson;
-import net.sourceforge.pinyin4j.PinyinHelper;
-import net.sourceforge.pinyin4j.format.HanyuPinyinCaseType;
-import net.sourceforge.pinyin4j.format.HanyuPinyinOutputFormat;
-import net.sourceforge.pinyin4j.format.HanyuPinyinToneType;
-import net.sourceforge.pinyin4j.format.HanyuPinyinVCharType;
-import net.sourceforge.pinyin4j.format.exception.BadHanyuPinyinOutputFormatCombination;
-import org.dom4j.Document;
-import org.dom4j.DocumentException;
-import org.dom4j.DocumentHelper;
-import org.dom4j.tree.DefaultDocument;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.criteria.*;
 import java.io.*;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -282,7 +264,7 @@ public class DemoApplicationTests {
     RoomRepository roomRepository;
     @Test
     public void test_17(){
-        int gdut = roomServiceImpl.deleteMember("GDUT", "158");
+        boolean gdut = userServiceImpl.exists("GDUT");
         System.out.println(gdut);
     }
 }

@@ -1,6 +1,5 @@
 package com.eem.demo.controller;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.eem.demo.entity.State;
@@ -16,7 +15,6 @@ import com.eem.demo.util.JwtUtil;
 import com.eem.demo.util.Md5Util;
 import com.eem.demo.util.PinYinUtil;
 import com.eem.demo.websocket.UserWebSocket;
-import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.Logger;
 import org.aspectj.util.FileUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -213,7 +211,7 @@ public class UserController {
 
         logger.info("传过来的photoPath: " + photoPath);
 
-        if (photoPath == null || "".equals(photoPath)){
+        if (photoPath == null || "".equals(photoPath) || "undefined".equals(photoPath)){
             //获取用户id
             String userId = JwtUtil.getUserId(request.getHeader("token"));
             //获取照片路径
