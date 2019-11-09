@@ -106,4 +106,12 @@ public interface RoomService {
      * @return
      */
     String findRoomName(String roomId);
+
+    /**
+     * 查询是否是群聊成员
+     * @param roomId
+     * @param username
+     * @return
+     */
+    boolean isRoomMember(String roomId, String username);
 }

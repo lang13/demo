@@ -46,7 +46,7 @@ public class RoomWebSocket {
     /**
      * 每个房间拥有的人
      */
-    private static Map<String, List<String>> membersName;
+    public static Map<String, List<String>> membersName;
     static{
         membersName = new ConcurrentHashMap<>();
     }

@@ -285,13 +285,16 @@ public class DemoApplicationTests {
 //        RoomMember roomMember = roomServiceImpl.addRoomMember("gg", "84");
 //        System.out.println(roomMember);
 
-//        List<String> memberName = roomServiceImpl.findMemberName("84");
+//        List<String> memberName = roomServiceImpl.findMemberName("119");
 //        System.out.println(memberName);
 
-        String roomName = roomServiceImpl.findRoomName("1");
-        System.out.println(roomName);
+//        String roomName = roomServiceImpl.findRoomName("1");
+//        System.out.println(roomName);
 
 //        Room one = roomRepository.findOne(1);
 //        System.out.println(one.getRoomName());
+
+        boolean i = roomServiceImpl.isRoomMember("126", "qq");
+        System.out.println(i);
     }
 }

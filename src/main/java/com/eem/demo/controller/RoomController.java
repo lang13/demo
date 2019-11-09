@@ -104,8 +104,19 @@ public class RoomController {
             obj.setMsg("房间不存在!!!");
             return obj;
         }
+        if (roomServiceImpl.isRoomMember(roomId, username)){
+            obj = ReturnObj.fail();
+            obj.setMsg("用户已是群聊成员!!!");
+            return obj;
+        }
 
         RoomMember roomMember = roomServiceImpl.addRoomMember(username, roomId);
+
+        //更新群聊成员的roomMemberName
+        List<String> memberName = roomServiceImpl.findMemberName(roomId);
+        RoomWebSocket.membersName.put(roomId, memberName);
+        logger.info(roomId + "里面的成员名字: " + memberName);
+
         logger.info(roomMember);
         if (roomMember == null){
             obj = ReturnObj.fail();

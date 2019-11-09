@@ -180,4 +180,15 @@ public class RoomServiceImpl implements RoomService {
         Room room = roomRepository.findOne(Integer.valueOf(roomId));
         return room.getRoomName();
     }
+
+    @Override
+    public boolean isRoomMember(String roomId, String username) {
+        Integer id = userServiceImpl.findByUsername(username).getId();
+        RoomMember member = roomMemberRepository.findRoomMemberByMemberIdAndRoomId(id, Integer.valueOf(roomId));
+        if (member == null){
+            return false;
+        }else{
+            return true;
+        }
+    }
 }
