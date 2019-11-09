@@ -25,7 +25,7 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * @author Administrator
  */
-@ServerEndpoint("/websocket/room/{username}")
+@ServerEndpoint("/websocket/test/{username}")
 @Component
 public class TestWebsocket {
     private static RoomService roomServiceImpl = (RoomService) SpringUtil.getBean("roomServiceImpl");
