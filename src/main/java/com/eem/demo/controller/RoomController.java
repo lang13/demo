@@ -189,7 +189,7 @@ public class RoomController {
             JSONObject msg = new JSONObject();
             msg.put("type", "deleteRoomMember");
             msg.put("roomId", roomId);
-            msg.put("msg", username + "被管理员移出群聊");
+            msg.put("msg", username + "退出群聊");
             RoomWebSocket.sendMsg(username1, roomId, msg);
 
             //给被移出的用户发送信息
