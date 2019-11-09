@@ -224,6 +224,7 @@ public class RoomWebSocket {
         types.add("deleteFriend");
         types.add("sendState");
         types.add("addRoomMember");
+        types.add("deleteRoomMember");
         if (object.getString("type") == null || types.contains(object.getString("type"))){
             return;
         }

@@ -156,21 +156,54 @@ public class RoomController {
      */
     @RequestMapping("/deleteRoomMember")
     public ReturnObj deleteRoomMember(String username, String roomId, HttpServletRequest request){
+        logger.info("需要删除群成员的username: " + username);
+        logger.info("需要删除群成员的roomId: " + roomId);
+
         ReturnObj obj = null;
         //获取请求人的username
         String token = request.getHeader("token");
         String username1 = JwtUtil.getUsername(token);
 
         //判断是否是管理员和自己
-        if (!roomServiceImpl.isMaster(username1,roomId) || !username1.equals(username)){
+        if (!roomServiceImpl.isMaster(username1,roomId) && !username1.equals(username)){
+            logger.info("不是管理员,操作失败");
             obj = ReturnObj.fail();
+            obj.setMsg("不是管理员获操作失败!!!");
             return obj;
         }
+
+        //管理员自己删除自己
+        if (roomServiceImpl.isMaster(username1, roomId) && username1.equals(username)){
+            logger.info("管理员自己删除自己");
+            obj = ReturnObj.fail();
+            obj.setMsg("管理员不能自己删除自己，请将管理员位置交付他人再进行退群");
+            return obj;
+        }
+
         //如果是管理员或者自己就进行删除操作
         int i = roomServiceImpl.deleteMember(username, roomId);
         if(i > 0){
+            logger.info("删除成功,发送websocket信息");
             obj = ReturnObj.success();
-            //移除session
+            //发送Room websocket信息
+            JSONObject msg = new JSONObject();
+            msg.put("type", "deleteRoomMember");
+            msg.put("roomId", roomId);
+            msg.put("msg", username + "被管理员移出群聊");
+            RoomWebSocket.sendMsg(username1, roomId, msg);
+
+            //给被移出的用户发送信息
+            String roomName = roomServiceImpl.findRoomName(roomId);
+            JSONObject object = new JSONObject();
+            object.put("toName", username);
+            object.put("fromName", username1);
+            object.put("roomId", roomId);
+            object.put("roomName", roomName);
+            object.put("type", "deleteRoomMember");
+            object.put("msg", "你已被移出群聊 " + roomName);
+            UserWebSocket.sendMsg(username, object);
+
+            //移除Session
             RoomWebSocket.deleteOne(username, roomId);
         }else{
             obj = ReturnObj.fail();
@@ -182,9 +215,10 @@ public class RoomController {
      * @catalog EMM考核项目/群聊模块
      * @title 查询群聊成员
      * @description 根据房间id,查询房间成员和管理员
-     * 根据房间id查找房间成员
-     * @param roomId
-     * @return
+     * @method get/post
+     * @url http://2700v9g607.zicp.vip:18340/findRoomMember
+     * @param roomId 必须 string 房间id
+     * @return {"code":100,"msg":"处理成功！","extend":{"roomMaster":{"id":1,"username":"张三","password":"d8bacf6f768bbd18d2a5642d83edf916","photo":"C:/emm/1875b54c-252f-431f-936a-3156f611e143.jpg","gender":"女","address":"广东惠州","signature":"浪","state":null,"memoName":null,"pinYin":null},"roomMember":[{"id":1,"username":"张三","password":"d8bacf6f768bbd18d2a5642d83edf916","photo":"C:/emm/1875b54c-252f-431f-936a-3156f611e143.jpg","gender":"女","address":"广东惠州","signature":"浪","state":null,"memoName":null,"pinYin":"zhangsan"},{"id":2,"username":"李四","password":null,"photo":null,"gender":null,"address":null,"signature":null,"state":"离线","memoName":"张三设置的小四","pinYin":"zhangsanshezhidexiaosi"},{"id":3,"username":"11","password":null,"photo":"C:/emm/fdfa5384-46ea-4619-b93e-755d0f5a4359.jpg","gender":"男","address":"河北","signature":"啦啦啦","state":"离线","memoName":"小G","pinYin":"xiaoG"}]}}
      */
     @RequestMapping("/findRoomMember")
     public ReturnObj findRoomMember(String roomId, HttpServletRequest request){
