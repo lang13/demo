@@ -152,7 +152,7 @@ public class TestWebsocket {
 
     @OnError
     public void onError(Throwable error) {
-        logger.info("发生错误" + new Date());
+        logger.info("TestWebSocket发生错误" + new Date());
         error.printStackTrace();
     }
 

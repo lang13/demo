@@ -4,12 +4,10 @@ import com.alibaba.fastjson.JSONObject;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
-import javax.websocket.OnClose;
-import javax.websocket.OnMessage;
-import javax.websocket.OnOpen;
-import javax.websocket.Session;
+import javax.websocket.*;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
+import java.util.Date;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -65,6 +63,12 @@ public class TempWebSocket {
     public void onClose(@PathParam("username")String username){
         //除去session
         users.remove(username);
+    }
+
+    @OnError
+    public void onError(Throwable error){
+        logger.info("TempWebSocket发生错误" + new Date());
+        error.printStackTrace();
     }
 
     /**

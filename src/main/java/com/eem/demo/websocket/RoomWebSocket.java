@@ -143,7 +143,7 @@ public class RoomWebSocket {
 
     @OnError
     public void onError(Throwable error) {
-        logger.info("发生错误" + new Date());
+        logger.info("RoomWebSocket发生错误" + new Date());
         error.printStackTrace();
     }
 
