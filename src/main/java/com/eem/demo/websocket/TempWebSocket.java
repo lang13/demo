@@ -15,7 +15,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * showdoc
  * @catalog EMM考核项目/websocket
  * @title 群聊的消息提醒
- * @description 群聊通知的websocket，受限于一个小程序页面最多只能打开5个websocket，因此多了此websocket接收群聊的信息，但不通过此websocket来发送信息
+ * @description 群聊通知的websocket，当初脑子抽了才这么写的,现在来不及改了
  * @method websocket
  * @url ws://2700v9g607.zicp.vip:18340/websocket/temp/{username}
  * @param username 必须 string 用户名
@@ -43,9 +43,9 @@ public class TempWebSocket {
     @OnOpen
     public void onOpen(Session session, @PathParam("username")String username){
         this.username = username;
-
         //放入session
         users.put(username,session);
+        logger.info("TempWebSocket包含的成员: " + users);
     }
 
     @OnMessage

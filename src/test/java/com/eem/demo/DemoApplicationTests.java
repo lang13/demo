@@ -80,7 +80,7 @@ public class DemoApplicationTests {
 
     @Test
     public void test_05(){
-        String msg = "123";
+        String msg = "123456";
         String md5 = Md5Util.getMd5(msg);
         System.out.println(md5);
     }
