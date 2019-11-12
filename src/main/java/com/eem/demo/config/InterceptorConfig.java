@@ -1,7 +1,6 @@
 package com.eem.demo.config;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.eem.demo.pojo.ReturnObj;
 import com.eem.demo.util.JwtUtil;
 import org.apache.log4j.Logger;
@@ -38,7 +37,9 @@ public class InterceptorConfig implements HandlerInterceptor {
             }
         }
 
-        //放行的请求
+        /**
+         * 如果没有携带token的话,依然无法请求
+         */
         if ("/photo/downloadPhoto".equals(request.getRequestURI())){
             return true;
         }

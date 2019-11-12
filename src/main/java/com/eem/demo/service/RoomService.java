@@ -114,4 +114,11 @@ public interface RoomService {
      * @return
      */
     boolean isRoomMember(String roomId, String username);
+
+    /**
+     * 查找用户已经加入的群
+     * @param userId
+     * @return
+     */
+    List<Room> findRoom(String userId);
 }

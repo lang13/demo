@@ -2,6 +2,7 @@ package com.eem.demo;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
+import com.eem.demo.entity.Room;
 import com.eem.demo.entity.State;
 import com.eem.demo.entity.User;
 import com.eem.demo.pojo.Message;
@@ -264,7 +265,7 @@ public class DemoApplicationTests {
     RoomRepository roomRepository;
     @Test
     public void test_17(){
-        boolean gdut = userServiceImpl.exists("GDUT");
-        System.out.println(gdut);
+        List<Room> room = roomServiceImpl.findRoom("1");
+        System.out.println(room);
     }
 }

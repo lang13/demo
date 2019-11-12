@@ -191,4 +191,11 @@ public class RoomServiceImpl implements RoomService {
             return true;
         }
     }
+
+    @Override
+    public List<Room> findRoom(String userId) {
+        List<Integer> roomId = findRoomId(userId);
+        List<Room> rooms = roomRepository.findAll(roomId);
+        return rooms;
+    }
 }

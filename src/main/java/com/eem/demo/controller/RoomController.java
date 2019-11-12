@@ -406,4 +406,23 @@ public class RoomController {
         }
         return  obj;
     }
+
+    @RequestMapping("/findRoom")
+    public ReturnObj findRoom(HttpServletRequest request){
+        ReturnObj obj = null;
+        //获取session
+        String token = request.getHeader("token");
+        String userId = JwtUtil.getUserId(token);
+
+        List<Room> room = roomServiceImpl.findRoom(userId);
+        logger.info("用户加入的群聊有: " + room);
+        if (room != null){
+            obj = ReturnObj.success();
+            obj.add("room", room);
+        }else{
+            obj = ReturnObj.fail();
+        }
+
+        return obj;
+    }
 }
