@@ -407,6 +407,15 @@ public class RoomController {
         return  obj;
     }
 
+    /**
+     * showdoc
+     * @catalog EMM考核项目/群聊模块
+     * @title 查询用户已加入的群聊
+     * @description 查询用户已加入的群聊，包括群聊id、群聊名和群主
+     * @method get/post
+     * @url http://2700v9g607.zicp.vip:18340/fiendRoom
+     * @return {"code":100,"msg":"处理成功！","extend":{"room":[{"id":1,"master":"张三","masterId":1,"roomName":"试验群"},{"id":2,"master":"张三","masterId":1,"roomName":"试验群1"},{"id":3,"master":"张三","masterId":1,"roomName":"试验群2"},{"id":4,"master":"张三","masterId":1,"roomName":"试验群3"},{"id":126,"master":"张三","masterId":1,"roomName":"试验群4"}]}}
+     */
     @RequestMapping("/findRoom")
     public ReturnObj findRoom(HttpServletRequest request){
         ReturnObj obj = null;
